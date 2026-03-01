@@ -1612,8 +1612,8 @@ class PlaceholderApp(ctk.CTk):
         if hasattr(self, 'progress_bar'):
             try:
                 self.progress_bar.set(self.progress_val)
-            except AttributeError:
-                self.progress_bar['value'] = self.progress_val * 100
+            except Exception:
+                pass
 
 
 
@@ -1657,7 +1657,7 @@ class PlaceholderApp(ctk.CTk):
 
 
 
-        self.status_label['text'] = f"Progres: {current}/{total}  Rămas: {remaining_str}"
+        self.status_label.configure(text=f"Progres: {current}/{total}  Rămas: {remaining_str}")
 
         self.progress_last_count = current
 
@@ -1679,7 +1679,7 @@ class PlaceholderApp(ctk.CTk):
 
         if hasattr(self, 'progress_bar'):
 
-            self.progress_bar['value'] = (current / total) * 100 if total > 0 else 0
+            self.progress_bar.set((current / total) if total > 0 else 0)
 
             
 
@@ -1689,9 +1689,9 @@ class PlaceholderApp(ctk.CTk):
 
     def reset_progress(self):
 
-        self.progress_bar['value'] = 0
+        self.progress_bar.set(0)
 
-        self.status_label['text'] = "Pregătit"
+        self.status_label.configure(text="Pregătit")
 
         self.stop_button.configure(state='disabled')
 
