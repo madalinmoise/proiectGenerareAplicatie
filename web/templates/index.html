@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ro">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expert HR — Generator Documente</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        crossorigin="anonymous" referrerpolicy="no-referrer">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body class="dark-theme">
+    <div class="app-container">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-layer-group"></i>
+                <span>Expert HR</span>
+            </div>
+
+            <nav class="wizard-nav">
+                <div class="nav-item active" data-step="1">
+                    <span class="step-num">1</span>
+                    <span class="step-label">Încarcă Excel</span>
+                </div>
+                <div class="nav-item" data-step="2">
+                    <span class="step-num">2</span>
+                    <span class="step-label">Verifică Date</span>
+                </div>
+                <div class="nav-item" data-step="3">
+                    <span class="step-num">3</span>
+                    <span class="step-label">Șabloane Word</span>
+                </div>
+                <div class="nav-item" data-step="4">
+                    <span class="step-num">4</span>
+                    <span class="step-label">Opțiuni</span>
+                </div>
+                <div class="nav-item" data-step="5">
+                    <span class="step-num">5</span>
+                    <span class="step-label">Generare</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="status-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>Server Activ</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main class="content">
+            <header class="top-bar">
+                <h1 id="step-title">Pasul 1: Încărcare Fișier de Date</h1>
+                <div class="user-actions">
+                    <button id="btn-refresh" title="Reîncarcă date"><i class="fas fa-sync-alt"></i></button>
+                    <button id="btn-theme-toggle" title="Comută tema"><i class="fas fa-moon"></i></button>
+                </div>
+            </header>
+
+            <section class="wizard-content">
+
+                <!-- ====  STEP 1: Upload Excel  ==== -->
+                <div class="step-pane active" id="pane-1">
+                    <div class="card upload-card">
+                        <i class="fas fa-file-excel upload-icon"></i>
+                        <h3>Fișier Excel cu datele participanților</h3>
+                        <p>Trage direct fișierul <strong>.xlsx</strong> în zona de mai jos sau apasă pentru a naviga.
+                        </p>
+
+                        <div class="drop-zone" id="excel-drop-zone">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span id="excel-drop-text">Trage fișierul .xlsx sau .xls aici</span>
+                        </div>
+                        <input type="file" id="excel-input" hidden accept=".xlsx,.xls">
+
+                        <div class="recent-files" id="recent-excel-list"></div>
+                    </div>
+                </div>
+
+                <!-- ====  STEP 2: Verify Excel  ==== -->
+                <div class="step-pane" id="pane-2">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-table" style="margin-right:8px;color:var(--accent)"></i>Previzualizare
+                                și Validare</h3>
+                            <span class="badge" id="row-count">— rânduri</span>
+                        </div>
+                        <div class="table-container" id="excel-preview-table">
+                            <p class="empty-state">Încărcați un fișier la Pasul 1.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ====  STEP 3: Templates  ==== -->
+                <div class="step-pane" id="pane-3">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-word" style="margin-right:8px;color:var(--accent-2)"></i>Șabloane
+                                Documente (.docx)</h3>
+                            <button class="btn-primary" id="btn-add-templates">
+                                <i class="fas fa-plus"></i> Adaugă Șablon
+                            </button>
+                        </div>
+                        <input type="file" id="template-input" hidden multiple accept=".docx,.odt,.txt,.html">
+                        <div class="template-list" id="template-list-container">
+                            <p class="empty-state">Nu există șabloane. Adăugați fișiere .docx din Desktop.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ====  STEP 4: Options  ==== -->
+                <div class="step-pane" id="pane-4">
+                    <div class="analysis-grid">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-link" style="margin-right:8px;color:var(--accent)"></i>Analiză
+                                    Mapare</h3>
+                            </div>
+                            <div class="mapping-status" id="mapping-summary"></div>
+                            <div class="mapping-details" id="mapping-details-list">
+                                <p class="empty-state">Navegați la acest pas după ce ați configurat Excel-ul și
+                                    șabloanele.</p>
+                            </div>
+                        </div>
+
+                        <div class="card settings-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-sliders-h"
+                                        style="margin-right:8px;color:var(--accent-2)"></i>Opțiuni Generare</h3>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="opt-folder-column"><i class="fas fa-folder"
+                                        style="margin-right:5px"></i>Coloană pentru Subfoldere:</label>
+                                <select id="opt-folder-column" class="form-control"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="opt-output-dir"><i class="fas fa-hdd" style="margin-right:5px"></i>Cale
+                                    Director Output:</label>
+                                <input type="text" id="opt-output-dir" class="form-control"
+                                    placeholder="ex: C:\Documente\Output">
+                            </div>
+                            <div class="form-group">
+                                <label for="opt-filename"><i class="fas fa-tag" style="margin-right:5px"></i>Șablon Nume
+                                    Fișier:</label>
+                                <input type="text" id="opt-filename" class="form-control"
+                                    placeholder="ex: {Nume de familie}_{Prenume}.docx">
+                            </div>
+
+                            <div class="toggles-group">
+                                <label class="toggle-control">
+                                    <input type="checkbox" id="opt-multiprocessing">
+                                    <span class="control"></span>
+                                    Procesare paralelă (viteză maximă)
+                                </label>
+                                <label class="toggle-control">
+                                    <input type="checkbox" id="opt-pdf">
+                                    <span class="control"></span>
+                                    Generează și PDF
+                                </label>
+                                <label class="toggle-control">
+                                    <input type="checkbox" id="opt-zip">
+                                    <span class="control"></span>
+                                    Arhivă ZIP per rând
+                                </label>
+                            </div>
+                            <button class="btn-primary" id="btn-save-options" style="margin-top:20px;width:100%">
+                                <i class="fas fa-save"></i> Salvează Opțiunile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ====  STEP 5: Dashboard  ==== -->
+                <div class="step-pane" id="pane-5">
+                    <div class="dashboard-grid">
+                        <div class="card stat-card">
+                            <span class="stat-label">Progres Total</span>
+                            <div class="stat-value" id="progress-percent">0%</div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar-fill" id="progress-bar"></div>
+                            </div>
+                            <div class="stat-mini-grid">
+                                <div class="stat-mini">
+                                    <div class="stat-mini-label">Succes</div>
+                                    <div class="stat-mini-val success" id="stat-success">0</div>
+                                </div>
+                                <div class="stat-mini">
+                                    <div class="stat-mini-label">Erori</div>
+                                    <div class="stat-mini-val error" id="stat-errors">0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card chart-card">
+                            <canvas id="live-chart"></canvas>
+                        </div>
+
+                        <div class="card resource-card">
+                            <h3>Resurse Sistem</h3>
+                            <div class="resource-item">
+                                <span>CPU <span id="cpu-pct"
+                                        style="float:right;font-weight:700;color:var(--text-1)">0%</span></span>
+                                <div class="mini-bar">
+                                    <div class="fill cpu-fill" id="cpu-bar" style="width:0%"></div>
+                                </div>
+                            </div>
+                            <div class="resource-item">
+                                <span>RAM <span id="ram-pct"
+                                        style="float:right;font-weight:700;color:var(--text-1)">0%</span></span>
+                                <div class="mini-bar">
+                                    <div class="fill ram-fill" id="ram-bar" style="width:0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="actions">
+                        <button class="btn-generate" id="btn-start-generate">
+                            <i class="fas fa-rocket"></i> Lansează Generarea
+                        </button>
+                        <button class="btn-stop" id="btn-stop-generate" disabled>
+                            <i class="fas fa-stop"></i> Oprește
+                        </button>
+                    </div>
+
+                    <!-- Real-time log tail -->
+                    <div class="card" style="margin-top:10px">
+                        <div class="card-header" style="margin-bottom:8px">
+                            <h3><i class="fas fa-terminal" style="margin-right:8px;color:var(--accent)"></i>Log în timp
+                                real</h3>
+                            <button class="btn-secondary" onclick="document.getElementById('live-log').innerHTML=''">
+                                <i class="fas fa-trash-alt"></i> Șterge
+                            </button>
+                        </div>
+                        <div id="live-log"
+                            style="font-family:'Fira Code',monospace;font-size:0.78rem;color:var(--text-2);max-height:180px;overflow-y:auto;line-height:1.7;padding:4px 0;">
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <footer class="bottom-nav">
+                <button class="btn-secondary" id="btn-prev" disabled>
+                    <i class="fas fa-chevron-left"></i> Înapoi
+                </button>
+                <div class="step-dots">
+                    <span class="dot active"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                </div>
+                <button class="btn-primary" id="btn-next">
+                    Pasul următor <i class="fas fa-chevron-right"></i>
+                </button>
+            </footer>
+        </main>
+    </div>
+
+    <script src="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&display=swap" type="text/css"></script>
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
