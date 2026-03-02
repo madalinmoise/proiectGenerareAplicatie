@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <title>Enterprise Document Hub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; font-family: 'Inter', sans-serif; }
+        .sidebar { background-color: #1e3a8a; min-height: 100vh; color: white; }
+        .nav-link { color: rgba(255,255,255,0.8); }
+        .nav-link.active { color: white; font-weight: bold; background: rgba(255,255,255,0.1); }
+        .card { border-radius: 12px; border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <div class="row">
+        <nav class="col-md-2 d-none d-md-block sidebar p-4">
+            <h3 class="mb-5">DOC GEN</h3>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a class="nav-link active" href="#">Dashboard</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Șabloane</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Date</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Generare</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Analytics</a></li>
+            </ul>
+        </nav>
+        <main class="col-md-10 p-5">
+            <div class="d-flex justify-content-between mb-4">
+                <h2>Dashboard Executiv</h2>
+                <button class="btn btn-primary" onclick="startRendering()">⚡ Începe Generarea</button>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card p-4 text-center">
+                        <h6 class="text-muted">Total Înregistrări</h6>
+                        <h2 id="total-rows">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 text-center">
+                        <h6 class="text-muted">Documente Generate</h6>
+                        <h2 id="success-count" class="text-success">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 text-center">
+                        <h6 class="text-muted">Erori Sesizate</h6>
+                        <h2 id="error-count" class="text-danger">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-5 p-4">
+                <h5>Progres Procesare</h5>
+                <div class="progress mt-3" style="height: 30px;">
+                    <div id="progress-bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+<script>
+    function updateStats() {
+        fetch('/api/wizard/stats')
+            .then(r => r.json())
+            .then(data => {
+                document.getElementById('progress-bar').style.width = data.percent + '%';
+                document.getElementById('success-count').innerText = data.success;
+                document.getElementById('error-count').innerText = data.errors;
+            });
+    }
+    setInterval(updateStats, 2000);
+    function startRendering() {
+        fetch('/api/wizard/start', {method: 'POST'});
+    }
+</script>
+</body>
+</html>

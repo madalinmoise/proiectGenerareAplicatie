@@ -1588,7 +1588,7 @@ class PlaceholderApp(ctk.CTk):
 
                     stats = msg[2]
 
-                    self.log(f"âœ… Proces complet! Succes: {stats['success']}, Erori: {stats['errors']}, Timp: {stats['duration']:.2f}s")
+                    self.log(f"✅ Proces complet! Succes: {stats['success']}, Erori: {stats['errors']}, Timp: {stats['duration']:.2f}s")
 
                     if stats.get('zip_path'):
 
@@ -3104,7 +3104,7 @@ class PlaceholderApp(ctk.CTk):
 
         if not active_cols:
 
-            self.log("âš  Nicio coloană activă pentru validare.")
+            self.log("⚠️ Nicio coloană activă pentru validare.")
 
             return
 
@@ -3120,19 +3120,19 @@ class PlaceholderApp(ctk.CTk):
 
                 excel_rows = [r+2 for r in empty_rows]
 
-                self.log(f"âš  Coloana [{col}]: Valori lipsă la rândurile {excel_rows[:10]}...")
+                self.log(f"⚠️ Coloana [{col}]: Valori lipsă la rândurile {excel_rows[:10]}...")
 
                 issues += len(empty_rows)
 
         if issues == 0:
 
-            self.log("âœ… Datele sunt valide.")
+            self.log("✅ Datele sunt valide.")
 
             messagebox.showinfo("Validare", "Datele sunt OK! Nu s-au găsit celule goale.")
 
         else:
 
-            self.log(f"âŒ S-au găsit {issues} probleme.")
+            self.log(f"❌ S-au găsit {issues} probleme.")
 
             messagebox.showwarning("Validare", f"S-au găsit {issues} celule goale/invalide!")
 
@@ -3820,7 +3820,7 @@ class PlaceholderApp(ctk.CTk):
 
     def load_sheets(self):
 
-        """Compatibilitate retroactivă â€“ nu mai e nevoie de selecție manuală."""
+        """Compatibilitate retroactivă – nu mai e nevoie de selecție manuală."""
 
         pass
 
@@ -3890,7 +3890,7 @@ class PlaceholderApp(ctk.CTk):
 
             if not hasattr(self, 'excel_tree'):
 
-                show_toast(self, "âš  Deschideși tab-ul Vizualizare Excel!", type="info")
+                show_toast(self, "⚠️ Deschideși tab-ul Vizualizare Excel!", type="info")
 
                 return
 
@@ -3900,7 +3900,7 @@ class PlaceholderApp(ctk.CTk):
 
             if not selection:
 
-                show_toast(self, "âš  Selectați un rând din tabelul Excel!", type="info")
+                show_toast(self, "⚠️ Selectați un rând din tabelul Excel!", type="info")
 
                 return
 
@@ -3920,7 +3920,7 @@ class PlaceholderApp(ctk.CTk):
 
             if not self.template_files:
 
-                show_toast(self, "âš  Nu există șabloane!", type="error")
+                show_toast(self, "⚠️ Nu există șabloane!", type="error")
 
                 return
 
@@ -3968,7 +3968,7 @@ class PlaceholderApp(ctk.CTk):
 
             self.load_word_preview_highlight(str(temp_out))
 
-            show_toast(self, "âœ¨ Previzualizare Live generată!")
+            show_toast(self, "✨ Previzualizare Live generată!")
 
 
 
@@ -4358,7 +4358,7 @@ class PlaceholderApp(ctk.CTk):
 
             self.after(0, self.reset_progress)
 
-            self.after(0, lambda: show_toast(self, "âœ… Generare finalizată!"))
+            self.after(0, lambda: show_toast(self, "✅ Generare finalizată!"))
 
 
 
@@ -4532,7 +4532,7 @@ class PlaceholderApp(ctk.CTk):
 
             self.tree.insert('', 'end', values=(
 
-                'â˜',
+                '☐',
 
                 item['placeholder'],
 
@@ -4560,7 +4560,7 @@ class PlaceholderApp(ctk.CTk):
 
                     self.correction_vars[idx].set(not self.correction_vars[idx].get())
 
-                    self.tree.set(item, column='select', value='â˜‘' if self.correction_vars[idx].get() else 'â˜')
+                    self.tree.set(item, column='select', value='☑' if self.correction_vars[idx].get() else '☐')
 
 
 
@@ -7249,7 +7249,7 @@ class PlaceholderApp(ctk.CTk):
 
             if hasattr(module, 'process_row'):
 
-                self.scripts = [module.process_row]
+                if module.process_row not in self.scripts: self.scripts.append(module.process_row)
 
                 self.log_queue.put("Script personalizat încărcat.")
 
@@ -7323,11 +7323,11 @@ class PlaceholderApp(ctk.CTk):
 
                             if found:
 
-                                detail_parts.append(f"âœ… Găsite: {', '.join(found)}")
+                                detail_parts.append(f"✅ Găsite: {', '.join(found)}")
 
                             if missing:
 
-                                detail_parts.append(f"âŒ Lipsă: {', '.join(missing)}")
+                                detail_parts.append(f"❌ Lipsă: {', '.join(missing)}")
 
                             for k, v in details.items():
 
@@ -7479,7 +7479,7 @@ class PlaceholderApp(ctk.CTk):
 
         if df is None:
 
-            self.stats_text.insert(tk.END, "âš  Niciun fișier Excel global încărcat.\n")
+            self.stats_text.insert(tk.END, "⚠️ Niciun fișier Excel global încărcat.\n")
 
             self.stats_text.insert(tk.END, "Incarcă un fișier Excel în tab-ul 'Randare' pentru a vedea statistici.\n")
 
@@ -7511,7 +7511,7 @@ class PlaceholderApp(ctk.CTk):
 
                 pct = (count / total_rows) * 100
 
-                self.stats_text.insert(tk.END, f"  â€¢ {str(name):.<40} {count:>3} ({pct:>4.1f}%)\n")
+                self.stats_text.insert(tk.END, f"  • {str(name):.<40} {count:>3} ({pct:>4.1f}%)\n")
 
             self.stats_text.insert(tk.END, "\n")
 
@@ -7529,7 +7529,7 @@ class PlaceholderApp(ctk.CTk):
 
             for name, count in counts.items():
 
-                self.stats_text.insert(tk.END, f"  â€¢ {str(name):.<40} {count:>3}\n")
+                self.stats_text.insert(tk.END, f"  • {str(name):.<40} {count:>3}\n")
 
             self.stats_text.insert(tk.END, "\n")
 
@@ -7547,13 +7547,13 @@ class PlaceholderApp(ctk.CTk):
 
             for name, count in counts.items():
 
-                self.stats_text.insert(tk.END, f"  â€¢ {str(name):.<40} {count:>3}\n")
+                self.stats_text.insert(tk.END, f"  • {str(name):.<40} {count:>3}\n")
 
             self.stats_text.insert(tk.END, "\n")
 
 
 
-        self.stats_text.insert(tk.END, f"\nâœ¨ Analiza a fost actualizată la {datetime.now().strftime('%H:%M:%S')}\n")
+        self.stats_text.insert(tk.END, f"\n✨ Analiza a fost actualizată la {datetime.now().strftime('%H:%M:%S')}\n")
 
         self.stats_text.configure(state='disabled')
 

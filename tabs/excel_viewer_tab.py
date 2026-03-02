@@ -70,7 +70,7 @@ def setup_excel_viewer_tab(app, parent):
 
     # BUTON PREVIZUALIZARE LIVE (Nou în Phase 3)
 
-    ctk.CTkButton(toolbar, text="âœ¨ Previzualizare Live", fg_color="#2e7d32", hover_color="#1b5e20",
+    ctk.CTkButton(toolbar, text="✨ Previzualizare Live", fg_color="#2e7d32", hover_color="#1b5e20",
 
                   command=app.preview_document).pack(side='left', padx=5)
 

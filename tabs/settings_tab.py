@@ -76,7 +76,7 @@ def setup_settings_tab(app, parent):
 
         "Formatare Dată (YYYY-MM-DD)",
 
-        "Șablon gol (def process_row)"
+        "Convert ; la linie noua", "Șablon gol (def process_row)"
 
     ]
 
@@ -90,7 +90,15 @@ def setup_settings_tab(app, parent):
 
         app.script_text.delete('1.0', tk.END)
 
-        if choice == "Nume la majuscule (Uppercase)":
+        if choice == "Convert ; la linie noua":
+            code = (
+                "def process_row(row):\n"
+                "    for key in row:\n"
+                "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
+                "            row[key] = row[key] + '\n'\n"
+                "    return row\n"
+            )
+        elif choice == "Nume la majuscule (Uppercase)":
 
             code = (
 
@@ -104,6 +112,14 @@ def setup_settings_tab(app, parent):
 
             )
 
+        elif choice == "Convert ; la linie noua":
+            code = (
+                "def process_row(row):\n"
+                "    for key in row:\n"
+                "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
+                "            row[key] = row[key] + '\n'\n"
+                "    return row\n"
+            )
         elif choice == "Titlecase pentru 'Nume' și 'Prenume'":
 
             code = (
@@ -120,6 +136,14 @@ def setup_settings_tab(app, parent):
 
             )
 
+        elif choice == "Convert ; la linie noua":
+            code = (
+                "def process_row(row):\n"
+                "    for key in row:\n"
+                "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
+                "            row[key] = row[key] + '\n'\n"
+                "    return row\n"
+            )
         elif choice == "Elimină spașiile libere (Strip)":
 
             code = (
@@ -136,6 +160,14 @@ def setup_settings_tab(app, parent):
 
             )
 
+        elif choice == "Convert ; la linie noua":
+            code = (
+                "def process_row(row):\n"
+                "    for key in row:\n"
+                "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
+                "            row[key] = row[key] + '\n'\n"
+                "    return row\n"
+            )
         elif choice == "Formatare Dată (YYYY-MM-DD)":
 
             code = (
@@ -216,7 +248,7 @@ def setup_settings_tab(app, parent):
 
     # Tastă inișială pt script
 
-    app.script_template_var.set("Șablon gol (def process_row)")
+    app.script_template_var.set("Convert ; la linie noua", "Șablon gol (def process_row)")
 
     apply_script_template()
 

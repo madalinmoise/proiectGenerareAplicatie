@@ -58,11 +58,11 @@ def setup_ai_guide_tab(app, parent):
 
         ("Format Excel", "format excel", "#FF9800"),
 
-        ("âš  Rezolvare Erori", "erori comune", "#F44336"),
+        ("⚠️ Rezolvare Erori", "erori comune", "#F44336"),
 
         ("Funcșii Avansate", "functii avansate", "#9C27B0"),
 
-        ("â“ Cum Folosesc", "cum folosesc", "#00BCD4"),
+        ("❓ Cum Folosesc", "cum folosesc", "#00BCD4"),
 
     ]
 
