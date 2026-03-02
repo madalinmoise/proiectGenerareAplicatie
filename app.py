@@ -344,7 +344,7 @@ class TemplateCache:
 
         self.lbl_loading_excel = None  # va fi setat în excel_viewer_tab.py
 
-    
+
 
     def get_tags(self, template_path: str, content: bytes = None) -> Set[str]:
 
@@ -366,11 +366,11 @@ class TemplateCache:
 
                     pass
 
-            
+
 
             tags = self._extract_tags_from_content(content or self._read_file(template_path))
 
-            
+
 
             if template_path:
 
@@ -386,11 +386,11 @@ class TemplateCache:
 
                     pass
 
-            
+
 
             return tags.copy()
 
-    
+
 
     def _read_file(self, path: str) -> bytes:
 
@@ -398,7 +398,7 @@ class TemplateCache:
 
             return f.read()
 
-    
+
 
     def _extract_tags_from_content(self, content: bytes) -> Set[str]:
 
@@ -434,7 +434,7 @@ class TemplateCache:
 
             return set()
 
-    
+
 
     def clear(self):
 
@@ -491,13 +491,13 @@ class SidebarNotebook(ctk.CTkFrame):
 
         self.grid_columnconfigure(1, weight=1)
 
-        
+
 
         self.sidebar_container = ctk.CTkScrollableFrame(self, width=240, corner_radius=0)
 
         self.sidebar_container.grid(row=0, column=0, sticky="nsew")
 
-        
+
 
         self.main_area = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
 
@@ -507,7 +507,7 @@ class SidebarNotebook(ctk.CTkFrame):
 
         self.main_area.grid_columnconfigure(0, weight=1)
 
-        
+
 
         self.tabs = {}
 
@@ -523,15 +523,15 @@ class SidebarNotebook(ctk.CTkFrame):
 
             return
 
-        
+
 
         frame = ctk.CTkFrame(self.main_area, corner_radius=0, fg_color="transparent")
 
         self.tabs[name] = frame
 
-        
 
-        btn = ctk.CTkButton(self.sidebar_container, text=name, anchor="w", 
+
+        btn = ctk.CTkButton(self.sidebar_container, text=name, anchor="w",
 
                             fg_color="transparent", text_color=("gray10", "gray90"),
 
@@ -563,7 +563,7 @@ class SidebarNotebook(ctk.CTkFrame):
 
             self.buttons[t_name].configure(fg_color="transparent")
 
-            
+
 
         self.tabs[name].grid(row=0, column=0, sticky="nsew")
 
@@ -571,7 +571,7 @@ class SidebarNotebook(ctk.CTkFrame):
 
         self.current_tab = name
 
-        
+
 
     def get(self):
 
@@ -587,7 +587,7 @@ class PlaceholderApp(ctk.CTk):
 
         super().__init__()
 
-        
+
 
         # Aplicare temă modernă
 
@@ -648,7 +648,7 @@ class PlaceholderApp(ctk.CTk):
 
         # self.after(100, self.show_disclaimer)
 
-        self.after(100, lambda: self.start_app(None))
+        self.after(100, self.show_startup_choice)
 
 
 
@@ -656,7 +656,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.ui_batcher = UIUpdateBatcher(min_interval_ms=100)
 
-        
+
 
         # State counts (Feature 5)
 
@@ -880,7 +880,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.log_frame = ctk.CTkFrame(self.paned)
 
-        self.log_area = scrolledtext.ScrolledText(self.log_frame, height=8, state='normal', wrap='word', 
+        self.log_area = scrolledtext.ScrolledText(self.log_frame, height=8, state='normal', wrap='word',
 
                                                  bg="#1e293b", fg="white", font=("Consolas", 10))
 
@@ -904,7 +904,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.init_tabs()
 
-        
+
 
         self.after(100, self.poll_log_queue)
 
@@ -986,21 +986,21 @@ class PlaceholderApp(ctk.CTk):
 
         NOTĂ DE COPYRIGHT ȘI EXONERARE DE RĂSPUNDERE
 
-        
+
 
         1. DREPTURI DE AUTOR
 
-        Această aplicație informatică este proprietatea intelectuală a S.l. dr. ing. Mădălin Vasile Moise. 
+        Această aplicație informatică este proprietatea intelectuală a S.l. dr. ing. Mădălin Vasile Moise.
 
         Toate drepturile asupra codului sursă, designului și logicii de funcționare îi aparșin autorului.
 
-        
+
 
         2. LIMITAREA RĂSPUNDERII
 
         Această aplicație este oferită "ca atare" (as is), fără nicio garanție, explicită sau implicită.
 
-        
+
 
         Autorul NU este răspunzător pentru:
 
@@ -1010,7 +1010,7 @@ class PlaceholderApp(ctk.CTk):
 
         - Pierderi de date sau alte prejudicii cauzate de utilizarea software-ului.
 
-        
+
 
         3. OBLIGAțIILE UTILIZATORULUI
 
@@ -1020,7 +1020,7 @@ class PlaceholderApp(ctk.CTk):
 
         - Utilizatorul este singurul responsabil pentru validitatea juridică a conținutului documentelor rezultate.
 
-        
+
 
         Prin apăsarea butonului de mai jos, confirmați că ați citit, ați înșeles și sunteși de acord cu acești termeni.
 
@@ -1041,6 +1041,41 @@ class PlaceholderApp(ctk.CTk):
         disc_win.protocol("WM_DELETE_WINDOW", self.quit_app)
 
 
+
+
+    def show_startup_choice(self):
+        choice_win = ctk.CTkToplevel(self)
+        choice_win.title("Alege Interfata - Enterprise Document Hub")
+        choice_win.geometry("450x300")
+        choice_win.attributes('-topmost', True)
+        choice_win.resizable(False, False)
+
+        # Center the window
+        choice_win.update_idletasks()
+        w = choice_win.winfo_width()
+        h = choice_win.winfo_height()
+        extra_w = choice_win.winfo_screenwidth() // 2 - w // 2
+        extra_h = choice_win.winfo_screenheight() // 2 - h // 2
+        choice_win.geometry(f"+{{extra_w}}+{{extra_h}}")
+
+        ctk.CTkLabel(choice_win, text="Hub Documente Enterprise", font=("Inter", 20, "bold")).pack(pady=(25, 5))
+        ctk.CTkLabel(choice_win, text="Selectati modalitatea de lucru:", font=("Inter", 13)).pack(pady=(0, 20))
+
+        def start_python():
+            choice_win.destroy()
+            self.start_app(None)
+
+        def start_web():
+            choice_win.destroy()
+            self.open_web_wizard()
+            self.quit_app()
+
+        ctk.CTkButton(choice_win, text="DESKTOP (Python Native)", command=start_python,
+                      height=45, corner_radius=10, font=("Inter", 14, "bold")).pack(pady=10, padx=40, fill='x')
+
+        ctk.CTkButton(choice_win, text="WEB (Browser Interface)", command=start_web,
+                      height=45, corner_radius=10, font=("Inter", 14, "bold"),
+                      fg_color="#64748b", hover_color="#475569").pack(pady=10, padx=40, fill='x')
 
     def start_app(self, window):
 
@@ -1327,23 +1362,23 @@ class PlaceholderApp(ctk.CTk):
 
         self.status_frame.pack(side='bottom', fill='x')
 
-        
+
 
         self.status_label = ctk.CTkLabel(self.status_frame, text="Pregătit", anchor='w')
 
         self.status_label.pack(side='left', fill='x', expand=True, padx=10)
 
-        
+
 
         # Tema Switch (Nou în UI Upgrade)
 
-        self.theme_btn = ctk.CTkButton(self.status_frame, text="Temă", width=80, 
+        self.theme_btn = ctk.CTkButton(self.status_frame, text="Temă", width=80,
 
                                        command=self.toggle_app_theme)
 
         self.theme_btn.pack(side='right', padx=10, pady=5)
 
-        
+
 
         self.progress_bar = ctk.CTkProgressBar(self.status_frame, width=200)
 
@@ -1351,7 +1386,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.progress_bar.set(0)
 
-        
+
 
         self.stop_button = ctk.CTkButton(self.status_frame, text="Oprește", width=80, fg_color="#c62828", hover_color="#b71c1c", command=self.stop_operation, state='disabled')
 
@@ -1393,7 +1428,7 @@ class PlaceholderApp(ctk.CTk):
 
             print(f"DEBUG LOG (safe): {safe_msg}", flush=True)
 
-            
+
 
         if hasattr(self, 'log_area') and self.log_area:
 
@@ -1507,7 +1542,7 @@ class PlaceholderApp(ctk.CTk):
 
                     if hasattr(self, 'folder_column_combo'): combos_to_update.append(self.folder_column_combo)
 
-                    
+
 
                     if self.global_excel_df is not None:
 
@@ -1517,7 +1552,7 @@ class PlaceholderApp(ctk.CTk):
 
                             combo['values'] = cols
 
-                        
+
 
                         # Special refresh for merged Excel Viewer
 
@@ -1603,11 +1638,11 @@ class PlaceholderApp(ctk.CTk):
 
             self.progress_val = 0
 
-        
+
 
         self.total_count = total
 
-            
+
 
         if hasattr(self, 'progress_bar'):
             try:
@@ -1661,7 +1696,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.progress_last_count = current
 
-        
+
 
         # Update Dashboard Widgets (Feature 5)
 
@@ -1681,7 +1716,7 @@ class PlaceholderApp(ctk.CTk):
 
             self.progress_bar.set((current / total) if total > 0 else 0)
 
-            
+
 
         self.update_idletasks()
 
@@ -2545,7 +2580,7 @@ class PlaceholderApp(ctk.CTk):
 
         empty_count = data.isna().sum().sum() + (data == "").sum().sum()
 
-        
+
 
         # Actualizăm label-urile dacă există
 
@@ -2599,7 +2634,7 @@ class PlaceholderApp(ctk.CTk):
 
                 break
 
-        
+
 
         if not target_col:
 
@@ -2633,7 +2668,7 @@ class PlaceholderApp(ctk.CTk):
 
             plt.tight_layout()
 
-            
+
 
             canvas = FigureCanvasTkAgg(fig, master=self.dashboard_chart_frame)
 
@@ -2651,7 +2686,7 @@ class PlaceholderApp(ctk.CTk):
 
             canvas.get_tk_widget().pack(fill='both', expand=True)
 
-            
+
 
         plt.close(fig)
 
@@ -2909,7 +2944,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.full_df = df
 
-        
+
 
         # Stergem widgeturile vechi
 
@@ -2919,7 +2954,7 @@ class PlaceholderApp(ctk.CTk):
 
                 w.destroy()
 
-        
+
 
         self.column_vars = {}
 
@@ -2937,7 +2972,7 @@ class PlaceholderApp(ctk.CTk):
 
                 cb.pack(fill="x", padx=2)
 
-                
+
 
         self.cols_for_subfolder = ["(Niciunul)"] + list(df.columns)
 
@@ -3759,7 +3794,7 @@ class PlaceholderApp(ctk.CTk):
 
             self.load_global_excel_df(filename)
 
-            
+
 
     def load_global_excel_df(self, filename):
 
@@ -3807,7 +3842,7 @@ class PlaceholderApp(ctk.CTk):
 
             columns = list(df.columns)
 
-            
+
 
             # Actualizăm toate combo-urile de coloane disponibile
 
@@ -3819,13 +3854,13 @@ class PlaceholderApp(ctk.CTk):
 
             if hasattr(self, 'subfolder_combo'): combos_to_update.append(self.subfolder_combo)
 
-            
+
 
             for combo in combos_to_update:
 
                 combo['values'] = columns
 
-                
+
 
             if 'ID' in columns:
 
@@ -3859,7 +3894,7 @@ class PlaceholderApp(ctk.CTk):
 
                 return
 
-                
+
 
             selection = self.excel_tree.selection()
 
@@ -3869,7 +3904,7 @@ class PlaceholderApp(ctk.CTk):
 
                 return
 
-            
+
 
             item = self.excel_tree.item(selection[0])
 
@@ -3879,7 +3914,7 @@ class PlaceholderApp(ctk.CTk):
 
             row_data = dict(zip(cols, row_values))
 
-            
+
 
             # 2. Șablonul
 
@@ -3891,7 +3926,7 @@ class PlaceholderApp(ctk.CTk):
 
             template_path = getattr(self, 'current_preview_template', self.template_files[0])
 
-            
+
 
             # 3. Randare
 
@@ -3899,19 +3934,19 @@ class PlaceholderApp(ctk.CTk):
 
             context = {k: ('' if pd.isna(v) else v) for k, v in row_data.items()}
 
-            
+
 
             from template_utils import (
 
-                fuzzy_match_columns, 
+                fuzzy_match_columns,
 
-                extract_placeholders_from_file, 
+                extract_placeholders_from_file,
 
                 render_document_from_template
 
             )
 
-            
+
 
             all_ph = extract_placeholders_from_file(template_path)
 
@@ -3927,7 +3962,7 @@ class PlaceholderApp(ctk.CTk):
 
             render_document_from_template(template_path, context, temp_out)
 
-            
+
 
             # 4. Afisare
 
@@ -3935,7 +3970,7 @@ class PlaceholderApp(ctk.CTk):
 
             show_toast(self, "âœ¨ Previzualizare Live generată!")
 
-            
+
 
         except Exception as e:
 
@@ -4099,7 +4134,7 @@ class PlaceholderApp(ctk.CTk):
 
             self.is_generating = True
 
-            
+
 
             data_file = self.data_file_path.get().strip()
 
@@ -4151,7 +4186,7 @@ class PlaceholderApp(ctk.CTk):
 
             if hasattr(self, 'stop_button'): self.stop_button.configure(state='normal')
 
-            
+
 
             self.stop_render_event.clear()
 
@@ -5025,7 +5060,7 @@ class PlaceholderApp(ctk.CTk):
 
             return
 
-        if not messagebox.askyesno("Confirmare", 
+        if not messagebox.askyesno("Confirmare",
 
                                     "Corecția automată va modifica fișierele originale.\n"
 
@@ -5451,19 +5486,19 @@ class PlaceholderApp(ctk.CTk):
 
             self.word_text.insert(1.0, content)
 
-            
+
 
             # Highlight placeholders (new)
 
             highlight_placeholders_in_viewer(self)
 
-            
+
 
             self.word_text.configure(state='disabled')
 
             self.word_current_file = file_path
 
-            
+
 
             if highlight_placeholder:
 
@@ -5545,7 +5580,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.word_text.configure(state='disabled')
 
-        
+
 
         if self.word_search_results:
 
@@ -5729,7 +5764,7 @@ class PlaceholderApp(ctk.CTk):
 
     def excel_viewer_refresh_columns_list(self):
 
-        # Ne bazăm pe _populate_excel_tree care s-a apelat deja, 
+        # Ne bazăm pe _populate_excel_tree care s-a apelat deja,
 
         # refacem checkbutton-urile folosind datele din excel_data
 
@@ -6219,174 +6254,6 @@ class PlaceholderApp(ctk.CTk):
 
             traceback.print_exc()
 
-    def generate_custom_chart(self):
-
-        """Raport personalizat: utilizatorul alege coloanele și tipul de grafic."""
-
-        data_source = getattr(self, 'global_excel_df', None)
-
-        if data_source is None:
-
-            data_source = getattr(self, 'excel_data', None)
-
-            
-
-        if data_source is None:
-
-            messagebox.showerror("Eroare", "Încărcați mai întâi un fișier Excel.")
-
-            return
-
-        x_col = self.custom_x_col.get()
-
-        y_col = self.custom_y_col.get()
-
-        chart_type = self.custom_chart_type.get()
-
-        if not x_col:
-
-            messagebox.showerror("Eroare", "Selectați o coloană pentru axa X.")
-
-            return
-
-        data = self.filtered_data if self.filtered_data is not None else self.excel_data
-
-        if chart_type == 'scatter':
-
-            if not y_col:
-
-                messagebox.showerror("Eroare", "Pentru scatter plot, selectați și o coloană Y.")
-
-                return
-
-            x_num = pd.to_numeric(data[x_col], errors='coerce')
-
-            y_num = pd.to_numeric(data[y_col], errors='coerce')
-
-            if x_num.isna().all() or y_num.isna().all():
-
-                messagebox.showerror("Eroare", "Coloanele selectate nu sunt numerice.")
-
-                return
-
-            self._show_scatter_plot(data[x_col], data[y_col], x_col, y_col)
-
-        elif chart_type == 'bar':
-
-            if y_col:
-
-                y_num = pd.to_numeric(data[y_col], errors='coerce')
-
-                if y_num.isna().all():
-
-                    messagebox.showerror("Eroare", "Coloana Y nu este numerică.")
-
-                    return
-
-                grouped = data.groupby(x_col)[y_col].sum()
-
-                self._show_bar_chart(grouped, x_col, y_col)
-
-            else:
-
-                counts = data[x_col].value_counts()
-
-                self._show_bar_chart(counts, x_col, 'Număr aparișii')
-
-        elif chart_type == 'pie':
-
-            counts = data[x_col].value_counts()
-
-            self._show_pie_chart(counts, x_col)
-
-        elif chart_type == 'line':
-
-            if not y_col:
-
-                messagebox.showerror("Eroare", "Pentru line chart, selectați și o coloană Y.")
-
-                return
-
-            y_num = pd.to_numeric(data[y_col], errors='coerce')
-
-            if y_num.isna().all():
-
-                messagebox.showerror("Eroare", "Coloana Y nu este numerică.")
-
-                return
-
-            fig, ax = plt.subplots(figsize=(10, 6))
-
-            ax.plot(data[x_col], y_num, marker='o')
-
-            ax.set_xlabel(x_col)
-
-            ax.set_ylabel(y_col)
-
-            ax.set_title(f'{y_col} în funcție de {x_col}')
-
-            plt.xticks(rotation=45, ha='right')
-
-            plt.tight_layout()
-
-            self._display_figure(fig)
-
-        else:
-
-            messagebox.showerror("Eroare", "Tip de grafic necunoscut.")
-
-    def apply_filters(self):
-
-        """Aplică filtrele definite de utilizator (placeholder)."""
-
-        if self.excel_data is None:
-
-            return
-
-        self.filtered_data = self.excel_data.copy()
-
-        self.log("Filtre aplicate (implicit).")
-
-
-
-    def export_filtered_data(self):
-
-        """Exportă datele filtrate în CSV sau Excel."""
-
-        if not hasattr(self, 'filtered_data') or self.filtered_data is None:
-
-            if self.excel_data is not None:
-
-                self.filtered_data = self.excel_data
-
-            else:
-
-                messagebox.showerror("Eroare", "Nu există date de exportat.")
-
-                return
-
-        file_path = filedialog.asksaveasfilename(defaultextension=".xlsx",
-
-                                                 filetypes=[("Excel files", "*.xlsx"), ("CSV files", "*.csv")])
-
-        if file_path:
-
-            try:
-
-                if file_path.endswith('.csv'):
-
-                    self.filtered_data.to_csv(file_path, index=False, encoding='utf-8-sig')
-
-                else:
-
-                    self.filtered_data.to_excel(file_path, index=False)
-
-                self.log(f"Date exportate în {file_path}")
-
-            except Exception as e:
-
-                messagebox.showerror("Eroare", f"Nu s-a putut exporta: {e}")
-
     def export_report_data(self):
 
         if not self.report_data:
@@ -6441,7 +6308,7 @@ class PlaceholderApp(ctk.CTk):
 
             data = getattr(self, 'excel_data', None)
 
-            
+
 
         if data is None:
 
@@ -6483,7 +6350,7 @@ class PlaceholderApp(ctk.CTk):
 
             data = getattr(self, 'excel_data', None)
 
-            
+
 
         if data is None:
 
@@ -6525,7 +6392,7 @@ class PlaceholderApp(ctk.CTk):
 
             data = getattr(self, 'excel_data', None)
 
-            
+
 
         if data is None:
 
@@ -6597,7 +6464,7 @@ class PlaceholderApp(ctk.CTk):
 
             data = getattr(self, 'excel_data', None)
 
-            
+
 
         if data is None:
 
@@ -6661,7 +6528,7 @@ class PlaceholderApp(ctk.CTk):
 
             data = getattr(self, 'excel_data', None)
 
-            
+
 
         if data is None:
 
@@ -6703,7 +6570,7 @@ class PlaceholderApp(ctk.CTk):
 
             data = getattr(self, 'excel_data', None)
 
-            
+
 
         if data is None:
 
@@ -6761,7 +6628,7 @@ class PlaceholderApp(ctk.CTk):
 
             data_source = getattr(self, 'excel_data', None)
 
-            
+
 
         if data_source is None:
 
@@ -6961,6 +6828,97 @@ class PlaceholderApp(ctk.CTk):
 
 
 
+
+    def stats_research_grades(self):
+        """Statistici pe grade de cercetare (CSI, CSII, etc.)."""
+        data = self._get_stat_data()
+        if data is None: return
+        possible_cols = ['grad_profesional', 'Grad', 'Position', 'Functie']
+        col = self._find_col(data, possible_cols)
+        if not col:
+            messagebox.showinfo("Info", "Nu s-a gasit coloana de grade cercetare.")
+            return
+        # Filter for research grades
+        mask = data[col].astype(str).str.contains('CS', case=False, na=False)
+        counts = data[mask][col].value_counts()
+        self._show_bar_chart(counts, 'Grad Cercetare', 'Numar persoane')
+
+    def stats_student_types(self):
+        """Statistici pe tipuri de studenti (Student, Masterand, Doctorand)."""
+        data = self._get_stat_data()
+        if data is None: return
+        possible_cols = ['Statut', 'Tip', 'Categorie', 'Nivel studii']
+        col = self._find_col(data, possible_cols)
+        if not col:
+            # Try searching in all columns for these keywords
+            for c in data.columns:
+                if data[c].astype(str).str.contains('Student|Masterand|Doctorand', case=False, na=False).any():
+                    col = c
+                    break
+        if not col:
+            messagebox.showinfo("Info", "Nu s-a gasit coloana cu tipuri de studenti.")
+            return
+        counts = data[col].value_counts()
+        self._show_pie_chart(counts, 'Tipuri Studenti')
+
+    def audit_empty_cells(self):
+        """Identifica cine are celule goale."""
+        data = self._get_stat_data()
+        if data is None: return
+        # Find rows with any empty cell
+        empty_rows = data[data.isna().any(axis=1) | (data == '').any(axis=1)]
+        if empty_rows.empty:
+            messagebox.showinfo("Audit", "Nu s-au gasit celule goale!")
+            return
+
+        # Display first 20 names
+        name_col = self._find_col(data, ['Nume', 'nume_angajat', 'Nume de familie'])
+        if name_col:
+            names = empty_rows[name_col].head(20).tolist()
+            msg = "Persoane cu date lipsa:
+" + "
+".join([f"- {n}" for n in names])
+            if len(empty_rows) > 20: msg += f"
+... si inca {len(empty_rows)-20} rânduri."
+            messagebox.showwarning("Audit Celule Goale", msg)
+        else:
+            messagebox.showwarning("Audit Celule Goale", f"Gasite {len(empty_rows)} rânduri cu date lipsa.")
+
+    def audit_help_requests(self):
+        """Identifica cine are nevoie de ajutor."""
+        data = self._get_stat_data()
+        if data is None: return
+        possible_cols = ['ajutor', 'nevoie ajutor', 'asistenta']
+        col = self._find_col(data, possible_cols)
+        if not col:
+            messagebox.showinfo("Audit", "Nu s-a gasit coloana de solicitare ajutor.")
+            return
+
+        help_requested = data[data[col].astype(str).str.lower().str.contains('da|yes|true', na=False)]
+        if help_requested.empty:
+            messagebox.showinfo("Audit", "Nimeni nu a solicitat ajutor.")
+            return
+
+        name_col = self._find_col(data, ['Nume', 'nume_angajat'])
+        names = help_requested[name_col if name_col else data.columns[0]].head(20).tolist()
+        msg = "Persoane care au solicitat ajutor:
+" + "
+".join([f"- {n}" for n in names])
+        messagebox.showinfo("Solicitari Ajutor", msg)
+
+    def _get_stat_data(self):
+        d = getattr(self, 'global_excel_df', None) or getattr(self, 'excel_data', None)
+        if d is None:
+            messagebox.showerror("Eroare", "Incarcati mai intai un fisier Excel.")
+        return d
+
+    def _find_col(self, df, possible_names):
+        for p in possible_names:
+            for c in df.columns:
+                if p.lower() == str(c).lower() or p.lower() in str(c).lower():
+                    return c
+        return None
+
     def _display_figure(self, fig):
 
         """Curășă frame-ul și afișează figura."""
@@ -7069,7 +7027,7 @@ class PlaceholderApp(ctk.CTk):
 
             return
 
-        
+
 
         # Încercăm să găsim coloana de vârstă
 
@@ -7083,7 +7041,7 @@ class PlaceholderApp(ctk.CTk):
 
                 break
 
-        
+
 
         if age_col:
 
@@ -7185,7 +7143,7 @@ class PlaceholderApp(ctk.CTk):
 
             pass
 
-            
+
 
         if not usage:
 
@@ -7193,7 +7151,7 @@ class PlaceholderApp(ctk.CTk):
 
             return
 
-            
+
 
         series = pd.Series(usage).sort_values(ascending=False)
 
@@ -7235,7 +7193,7 @@ class PlaceholderApp(ctk.CTk):
 
             data_to_export = getattr(self, 'excel_data', None)
 
-            
+
 
         if data_to_export is None:
 
@@ -7243,7 +7201,7 @@ class PlaceholderApp(ctk.CTk):
 
             return
 
-            
+
 
         file_path = filedialog.asksaveasfilename(defaultextension=".xlsx",
 
@@ -7349,7 +7307,7 @@ class PlaceholderApp(ctk.CTk):
 
                             continue
 
-                            
+
 
                     details = record.get('details', {})
 
@@ -7507,13 +7465,13 @@ class PlaceholderApp(ctk.CTk):
 
             return
 
-            
+
 
         self.stats_text.configure(state='normal')
 
         self.stats_text.delete('1.0', tk.END)
 
-        
+
 
         # Sursa de date: global_excel_df
 
@@ -7529,7 +7487,7 @@ class PlaceholderApp(ctk.CTk):
 
             return
 
-            
+
 
         total_rows = len(df)
 
@@ -7537,7 +7495,7 @@ class PlaceholderApp(ctk.CTk):
 
         self.stats_text.insert(tk.END, "="*60 + "\n\n")
 
-        
+
 
         # 1. Distribuție pe Departamente
 
@@ -7653,7 +7611,7 @@ class PlaceholderApp(ctk.CTk):
 
         text.pack(fill='both', expand=True, padx=10, pady=10)
 
-        text.insert('end', 
+        text.insert('end',
 
             "Cum să creezi un șablon Word:\n"
 
@@ -7891,7 +7849,7 @@ if __name__ == "__main__":
 
     ctk.set_window_scaling(1.15)
 
-    
+
 
     app = PlaceholderApp()
 
@@ -7904,4 +7862,3 @@ if __name__ == "__main__":
         pass
 
     app.mainloop()
-

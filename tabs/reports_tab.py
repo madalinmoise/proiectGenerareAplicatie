@@ -1,188 +1,83 @@
-﻿# tabs/reports_tab.py
-
 import tkinter as tk
-
 from tkinter import ttk
-
 from ui_utils import add_tooltip
 
-
-
 def setup_reports_tab(app, parent):
-
     frame = parent
-
     frame.grid_rowconfigure(3, weight=1)
-
     frame.grid_columnconfigure(0, weight=1)
 
-
-
-    # Frame pentru filtre (sus)
-
-    filter_frame = ttk.LabelFrame(frame, text="Filtre")
-
-    filter_frame.grid(row=0, column=0, sticky='ew', padx=5, pady=5)
-
-    filter_frame.grid_columnconfigure(0, weight=1)
-
-
-
-    # Aici vom adăuga controale pentru filtre (deocamdată placeholder)
-
-    ttk.Label(filter_frame, text="(Filtrele vor fi implementate în versiunea următoare)").pack(padx=5, pady=5)
-
-
-
-    # Frame pentru selecție coloane și tip grafic
-
-    custom_frame = ttk.LabelFrame(frame, text="Raport personalizat")
-
-    custom_frame.grid(row=1, column=0, sticky='ew', padx=5, pady=5)
-
-    custom_frame.grid_columnconfigure(1, weight=1)
-
-
-
-    ttk.Label(custom_frame, text="Coloana X:").grid(row=0, column=0, sticky='w', padx=5)
-
-    app.custom_x_col = tk.StringVar()
-
-    app.custom_x_combo = ttk.Combobox(custom_frame, textvariable=app.custom_x_col, state='readonly', width=30)
-
-    app.custom_x_combo.grid(row=0, column=1, padx=5, sticky='ew')
-
-
-
-    ttk.Label(custom_frame, text="Coloana Y (opșional):").grid(row=1, column=0, sticky='w', padx=5)
-
-    app.custom_y_col = tk.StringVar()
-
-    app.custom_y_combo = ttk.Combobox(custom_frame, textvariable=app.custom_y_col, state='readonly', width=30)
-
-    app.custom_y_combo.grid(row=1, column=1, padx=5, sticky='ew')
-
-
-
-    ttk.Label(custom_frame, text="Tip grafic:").grid(row=2, column=0, sticky='w', padx=5)
-
-    app.custom_chart_type = tk.StringVar(value='bar')
-
-    chart_combo = ttk.Combobox(custom_frame, textvariable=app.custom_chart_type,
-
-                                values=['bar', 'pie', 'line', 'scatter'], state='readonly', width=15)
-
-    chart_combo.grid(row=2, column=1, padx=5, sticky='w')
-
-
-
-    btn_custom = ttk.Button(custom_frame, text="Generează", command=app.generate_custom_chart)
-
-    btn_custom.grid(row=3, column=0, columnspan=2, pady=5)
-
-
-
-    # Butoane pentru statistici predefinite
-
-    stats_frame = ttk.LabelFrame(frame, text="Statistici predefinite")
-
-    stats_frame.grid(row=2, column=0, sticky='ew', padx=5, pady=5)
-
-    
-
-    # Folosim un grid interior pentru butoane
-
-    for i in range(4): stats_frame.grid_columnconfigure(i, weight=1)
-
-
-
-    btn_post = ttk.Button(stats_frame, text="Categorii post", command=app.stats_post_categories)
-
-    btn_post.grid(row=0, column=0, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_post, "Numărul de persoane pe categorii de post")
-
-
-
-    btn_dept = ttk.Button(stats_frame, text="Departamente", command=app.stats_departments)
-
-    btn_dept.grid(row=0, column=1, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_dept, "Distribușia pe departamente")
-
-
-
-    btn_edu = ttk.Button(stats_frame, text="Nivel educație", command=app.stats_education_level)
-
-    btn_edu.grid(row=0, column=2, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_edu, "Nivelul de educație (licenșă/master/doctorat)")
-
-
-
-    btn_act = ttk.Button(stats_frame, text="Activităși", command=app.stats_activities)
-
-    btn_act.grid(row=0, column=3, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_act, "Repartizarea pe activităși")
-
-
-
-    btn_id = ttk.Button(stats_frame, text="Tip act identitate", command=app.stats_id_types)
-
-    btn_id.grid(row=1, column=0, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_id, "Statistici privind tipul actului de identitate")
-
-
-
-    btn_gender = ttk.Button(stats_frame, text="Distribuție Gen", command=app.stats_gender)
-
-    btn_gender.grid(row=1, column=1, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_gender, "Distribușia pe gen (Feminim/Masculin)")
-
-
-
-    btn_age = ttk.Button(stats_frame, text="Grupe Vârstă", command=app.stats_age_groups)
-
-    btn_age.grid(row=1, column=2, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_age, "Statistici pe grupe de vârstă")
-
-
-
-    btn_usage = ttk.Button(stats_frame, text="Utilizare Șabloane", command=app.stats_template_usage)
-
-    btn_usage.grid(row=1, column=3, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_usage, "Top cele mai utilizate șabloane (din audit)")
-
-
-
-    btn_skills = ttk.Button(stats_frame, text="Matrice competenșe", command=app.skills_matrix)
-
-    btn_skills.grid(row=2, column=0, columnspan=4, padx=5, pady=5, sticky='ew')
-
-    add_tooltip(btn_skills, "Top competenșe menșionate în documente")
-
-
-
-    # Buton export date filtrate
-
-    export_btn = ttk.Button(frame, text="Exportă date filtrate", command=app.export_filtered_data)
-
-    export_btn.grid(row=4, column=0, pady=5)
-
-
-
-    # Canvas pentru afișarea graficelor
-
-    app.report_canvas_frame = ttk.Frame(frame)
-
-    app.report_canvas_frame.grid(row=3, column=0, sticky='nsew', padx=5, pady=5)
-
+    # Header section
+    header_frame = ttk.Frame(frame)
+    header_frame.grid(row=0, column=0, sticky='ew', padx=10, pady=10)
+    ttk.Label(header_frame, text="📊 Centru de Raportare Enterprise", font=("Inter", 18, "bold")).pack(side='left')
+
+    # Source Selection
+    source_frame = ttk.LabelFrame(frame, text="Configurare Sursă Date")
+    source_frame.grid(row=1, column=0, sticky='ew', padx=10, pady=5)
+
+    ttk.Label(source_frame, text="Coloană Activă:").pack(side='left', padx=5, pady=10)
+    app.report_source_col = tk.StringVar()
+    app.report_source_combo = ttk.Combobox(source_frame, textvariable=app.report_source_col, state='readonly', width=40)
+    app.report_source_combo.pack(side='left', padx=5, pady=10)
+
+    def refresh_report_cols():
+        if hasattr(app, 'global_excel_df') and app.global_excel_df is not None:
+            cols = list(app.global_excel_df.columns)
+            app.report_source_combo['values'] = cols
+            if cols and not app.report_source_col.get():
+                app.report_source_col.set(cols[0])
+
+    app.refresh_report_cols = refresh_report_cols
+    ttk.Button(source_frame, text="🔄 Refresh", command=refresh_report_cols).pack(side='left', padx=5)
+
+    # Unified Statistics Dashboard
+    dashboard_frame = ttk.Frame(frame)
+    dashboard_frame.grid(row=2, column=0, sticky='nsew', padx=10, pady=5)
+    dashboard_frame.grid_columnconfigure(0, weight=1)
+    dashboard_frame.grid_columnconfigure(1, weight=3)
+    dashboard_frame.grid_rowconfigure(0, weight=1)
+
+    # Left: Button grid
+    controls_container = ttk.LabelFrame(dashboard_frame, text="Acțiuni & Analize")
+    controls_container.grid(row=0, column=0, sticky='nsew', padx=(0, 5))
+
+    # Use a canvas/scrollbar for buttons if too many
+    btn_grid = ttk.Frame(controls_container)
+    btn_grid.pack(fill='both', expand=True, padx=5, pady=5)
+
+    # Research & Academic
+    ttk.Label(btn_grid, text="Academic & Cercetare", font=("Segoe UI", 10, "bold")).pack(anchor='w', pady=(5, 2))
+    ttk.Button(btn_grid, text="Grade Cercetare (CSI..)", command=app.stats_research_grades).pack(fill='x', pady=2)
+    ttk.Button(btn_grid, text="Tipuri Studenți", command=app.stats_student_types).pack(fill='x', pady=2)
+    ttk.Button(btn_grid, text="Activități Proiect", command=app.stats_activities).pack(fill='x', pady=2)
+
+    # HR & General
+    ttk.Label(btn_grid, text="Resurse Umane", font=("Segoe UI", 10, "bold")).pack(anchor='w', pady=(10, 2))
+    ttk.Button(btn_grid, text="Distribuție Departament", command=app.stats_departments).pack(fill='x', pady=2)
+    ttk.Button(btn_grid, text="Nivel Educație", command=app.stats_education_level).pack(fill='x', pady=2)
+    ttk.Button(btn_grid, text="Gen & Demografice", command=app.stats_gender).pack(fill='x', pady=2)
+
+    # Integrity & Audit
+    ttk.Label(btn_grid, text="Integritate Date", font=("Segoe UI", 10, "bold")).pack(anchor='w', pady=(10, 2))
+    ttk.Button(btn_grid, text="Cine are celule goale?", command=app.audit_empty_cells).pack(fill='x', pady=2)
+    ttk.Button(btn_grid, text="Solicitări Ajutor", command=app.audit_help_requests).pack(fill='x', pady=2)
+
+    # Manual Tool
+    ttk.Label(btn_grid, text="Analiză Manuală", font=("Segoe UI", 10, "bold")).pack(anchor='w', pady=(10, 2))
+    app.manual_chart_type = tk.StringVar(value='bar')
+    ttk.Combobox(btn_grid, textvariable=app.manual_chart_type, values=['bar', 'pie', 'line'], state='readonly').pack(fill='x', pady=2)
+    ttk.Button(btn_grid, text="Generează din Coloană", command=app.generate_manual_stat).pack(fill='x', pady=5)
+
+    # Right: Chart Display
+    app.report_canvas_frame = ttk.Frame(dashboard_frame, style='White.TFrame')
+    app.report_canvas_frame.grid(row=0, column=1, sticky='nsew', padx=(5, 0))
     app.report_canvas_frame.grid_rowconfigure(0, weight=1)
-
     app.report_canvas_frame.grid_columnconfigure(0, weight=1)
 
+    # Footer
+    footer = ttk.Frame(frame)
+    footer.grid(row=3, column=0, sticky='ew', padx=10, pady=10)
+    ttk.Button(footer, text="💾 Exportă Imagine Grafic", command=app.export_report_image).pack(side='right')
+
+    refresh_report_cols()
