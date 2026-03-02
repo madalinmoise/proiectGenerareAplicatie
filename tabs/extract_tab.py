@@ -1,4 +1,4 @@
-﻿# tabs/extract_tab.py
+# tabs/extract_tab.py
 
 import tkinter as tk
 

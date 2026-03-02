@@ -1,4 +1,4 @@
-﻿# tabs/editor_tab.py
+# tabs/editor_tab.py
 
 import tkinter as tk
 

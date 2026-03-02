@@ -1,4 +1,4 @@
-﻿# tabs/scan_tab.py
+# tabs/scan_tab.py
 
 import tkinter as tk
 

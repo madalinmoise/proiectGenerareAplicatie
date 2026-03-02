@@ -1,4 +1,4 @@
-﻿# tabs/forms_tab.py
+# tabs/forms_tab.py
 
 import tkinter as tk
 

@@ -1,4 +1,4 @@
-﻿# tabs/excel_viewer_tab.py
+# tabs/excel_viewer_tab.py
 
 import tkinter as tk
 

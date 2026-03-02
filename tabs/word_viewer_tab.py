@@ -1,4 +1,4 @@
-﻿# tabs/word_viewer_tab.py
+# tabs/word_viewer_tab.py
 
 import tkinter as tk
 

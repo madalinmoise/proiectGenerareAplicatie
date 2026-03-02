@@ -1,4 +1,4 @@
-﻿# tabs/email_tab.py
+# tabs/email_tab.py
 
 import tkinter as tk
 

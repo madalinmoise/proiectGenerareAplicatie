@@ -1,4 +1,4 @@
-﻿# tabs/ai_guide_tab.py
+# tabs/ai_guide_tab.py
 
 import tkinter as tk
 

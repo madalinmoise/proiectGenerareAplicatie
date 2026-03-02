@@ -1,4 +1,4 @@
-﻿# tabs/split_view_tab.py
+# tabs/split_view_tab.py
 
 import tkinter as tk
 
