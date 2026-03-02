@@ -75,4 +75,3 @@ def setup_manual_tab(app, parent):
     tk.Button(btn_frame, text="Căutare în Manual", command=app.search_in_manual,
 
               bg="#FF9800", fg="white", font=("Arial", 10, "bold")).pack(side="left", padx=5)
-

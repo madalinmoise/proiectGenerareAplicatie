@@ -2885,3 +2885,17 @@ Sau scrie 'erori comune' pentru lista completă.
 
 
 """
+    def _build_enterprise_knowledge(self):
+        return {
+            "statistici enterprise": """
+Aplicația oferă acum analize avansate pentru:
+1. Academic: Identificare automată Studenți, Masteranzi, Doctoranzi.
+2. Cercetare: Distribuție pe grade (CSI, CSII, etc.).
+3. Integritate: Audit pentru celule goale și cereri de asistență.
+4. Activități: Monitorizare participare pe activități de proiect.
+""",
+            "scripting multi": """
+Puteți activa mai multe scripturi simultan.
+Folosiți butonul 'Adaugă Script' pentru a stivui procesările (ex: Uppercase + Semicolon Convert).
+"""
+        }

@@ -1,7 +1,7 @@
 import pandas as pd
 import os
 
-data_file = "fisier_excel.xlsx"
+data_file = "temp_uploads/fisier_excel.xlsx"
 try:
     xl = pd.ExcelFile(data_file)
     print(f"Sheets: {xl.sheet_names}")
