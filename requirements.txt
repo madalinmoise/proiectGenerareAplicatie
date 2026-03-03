@@ -1,0 +1,16 @@
+customtkinter
+pandas
+openpyxl
+docxtpl
+python-docx
+docxcompose
+reportlab
+requests
+flask
+matplotlib
+psutil
+watchdog
+aiofiles
+odfpy
+fuzzywuzzy
+python-levenshtein

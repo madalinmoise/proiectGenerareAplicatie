@@ -1,51 +1,61 @@
 import customtkinter as ctk
-import tkinter as tk
 from ui.components.sidebar import EnterpriseSidebar
-from app import PlaceholderApp
+from ui.components.dashboard import DashboardTab
+from ui.components.render_tab import RenderTab
+from ui.components.reports_tab import ReportsTab
+from ui.components.audit_tab import AuditTab
+from core.engine import DocumentEngine
+from core.config_manager import ConfigManager
 
-class EnterpriseApp(PlaceholderApp):
+class EnterpriseApp(ctk.CTk):
     def __init__(self):
         super().__init__()
-        self.title("Enterprise Document Hub")
-        self.geometry("1200x800")
+        self.title("Enterprise Document Hub v6.5")
+        self.geometry("1280x850")
 
-        # Hide the default toolbar and notebook as we will use our own layout
-        for child in self.winfo_children():
-            if isinstance(child, (ctk.CTkFrame, tk.Frame)):
-                 child.pack_forget()
+        # Core Components
+        self.config_mgr = ConfigManager()
+        self.engine = DocumentEngine()
+        self.engine.set_config(self.config_mgr.config)
 
-        # New Layout
+        # Main Layout
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # Sidebar with our custom callbacks
-        self.sidebar = EnterpriseSidebar(self, tab_callback=self.set_enterprise_tab)
+        self.sidebar = EnterpriseSidebar(self, tab_callback=self.set_tab)
         self.sidebar.grid(row=0, column=0, sticky="nsew")
 
         self.main_container = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-        self.main_container.grid(row=0, column=1, sticky="nsew", padx=20, pady=20)
+        self.main_container.grid(row=0, column=1, sticky="nsew", padx=30, pady=30)
         self.main_container.grid_rowconfigure(0, weight=1)
         self.main_container.grid_columnconfigure(0, weight=1)
 
-        # Move tabs to our new container
-        for name, frame in self.tabs.items():
-            frame.master = self.main_container # Hack to move it
-            # Actually, the original tabs are in self.notebook which is now hidden.
-            # Let's just use the original set method but it updates the sidebar too.
-            pass
-
-    def set_enterprise_tab(self, name):
-        # Map our sidebar labels to the actual tab names in PlaceholderApp
-        mapping = {
-            "Dashboard": "Dashboard",
-            "Extracție": "Pasul 1: Extrage placeholders",
-            "Randare": "Pasul 2: Generează documente",
-            "Analiză & Rapoarte": "Rapoarte",
-            "Audit Log": "Audit Log",
-            "Setări": "Setări"
+        self.tab_classes = {
+                        "Dashboard": DashboardTab,
+            "Pasul 2: GenereazÄ documente": RenderTab,
+            "Rapoarte": ReportsTab,
+            "Audit Log": AuditTab
+            # Placeholder for others...
         }
-        actual_name = mapping.get(name, name)
-        self.notebook.set(actual_name)
+        self.tabs = {}
+        self.current_tab = None
+
+        # Initial Tab
+        self.set_tab("Dashboard")
+
+    def set_tab(self, name):
+        if name not in self.tab_classes:
+            print(f"Tab {name} not implemented in modern UI yet.")
+            return
+
+        if self.current_tab:
+            self.current_tab.grid_forget()
+
+        if name not in self.tabs:
+            self.tabs[name] = self.tab_classes[name](self.main_container, self.engine)
+
+        self.tabs[name].grid(row=0, column=0, sticky="nsew")
+        self.current_tab = self.tabs[name]
 
 if __name__ == "__main__":
     app = EnterpriseApp()

@@ -60,7 +60,7 @@ def setup_settings_tab(app, parent):
 
     templates_frame.pack(fill='x', padx=5, pady=5)
 
-    
+
 
     app.script_template_var = tk.StringVar()
 
@@ -82,7 +82,7 @@ def setup_settings_tab(app, parent):
 
     script_combo.pack(side='left', padx=5, pady=5)
 
-    
+
 
     def apply_script_template(*args):
 
@@ -95,7 +95,7 @@ def setup_settings_tab(app, parent):
                 "def process_row(row):\n"
                 "    for key in row:\n"
                 "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
-                "            row[key] = row[key] + '\n'\n"
+                "            row[key] = row[key].replace(";", ";\n")\n"
                 "    return row\n"
             )
         elif choice == "Nume la majuscule (Uppercase)":
@@ -117,7 +117,7 @@ def setup_settings_tab(app, parent):
                 "def process_row(row):\n"
                 "    for key in row:\n"
                 "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
-                "            row[key] = row[key] + '\n'\n"
+                "            row[key] = row[key].replace(";", ";\n")\n"
                 "    return row\n"
             )
         elif choice == "Titlecase pentru 'Nume' și 'Prenume'":
@@ -141,7 +141,7 @@ def setup_settings_tab(app, parent):
                 "def process_row(row):\n"
                 "    for key in row:\n"
                 "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
-                "            row[key] = row[key] + '\n'\n"
+                "            row[key] = row[key].replace(";", ";\n")\n"
                 "    return row\n"
             )
         elif choice == "Elimină spașiile libere (Strip)":
@@ -165,7 +165,7 @@ def setup_settings_tab(app, parent):
                 "def process_row(row):\n"
                 "    for key in row:\n"
                 "        if isinstance(row[key], str) and row[key].endswith(';'):\n"
-                "            row[key] = row[key] + '\n'\n"
+                "            row[key] = row[key].replace(";", ";\n")\n"
                 "    return row\n"
             )
         elif choice == "Formatare Dată (YYYY-MM-DD)":
@@ -210,7 +210,7 @@ def setup_settings_tab(app, parent):
 
         app.script_text.insert('1.0', code)
 
-        
+
 
     ttk.Button(templates_frame, text="Incarcă model", command=apply_script_template).pack(side='left', padx=5)
 
@@ -248,7 +248,6 @@ def setup_settings_tab(app, parent):
 
     # Tastă inișială pt script
 
-    app.script_template_var.set("Convert ; la linie noua", "Șablon gol (def process_row)")
+    app.script_template_var.set("Șablon gol (def process_row)")
 
     apply_script_template()
-
