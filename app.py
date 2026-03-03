@@ -483,40 +483,6 @@ except Exception:
 
 class SidebarNotebook(ctk.CTkFrame):
 
-    def __init__(self, master, **kwargs):
-
-        super().__init__(master, **kwargs)
-
-        self.grid_rowconfigure(0, weight=1)
-
-        self.grid_columnconfigure(1, weight=1)
-
-
-
-        self.sidebar_container = ctk.CTkScrollableFrame(self, width=240, corner_radius=0)
-
-        self.sidebar_container.grid(row=0, column=0, sticky="nsew")
-
-
-
-        self.main_area = ctk.CTkFrame(self, corner_radius=0, fg_color="transparent")
-
-        self.main_area.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
-
-        self.main_area.grid_rowconfigure(0, weight=1)
-
-        self.main_area.grid_columnconfigure(0, weight=1)
-
-
-
-        self.tabs = {}
-
-        self.buttons = {}
-
-        self.current_tab = None
-
-
-
     def add(self, name):
 
         if name in self.tabs:
@@ -582,359 +548,6 @@ class SidebarNotebook(ctk.CTkFrame):
 
 
 class PlaceholderApp(ctk.CTk):
-
-    def __init__(self):
-
-        super().__init__()
-
-
-
-        # Aplicare temă modernă
-
-        ThemeManager.apply_initial_theme(config.get('theme', 'dark'))
-
-        self.custom_x_col = tk.StringVar()
-
-        self.custom_y_col = tk.StringVar()
-
-        self.custom_chart_type = tk.StringVar(value='bar')
-
-        self.filtered_data = None
-
-        self.report_canvas_frame = None
-
-        self.chart_type = tk.StringVar(value='bar')  # pentru tab-ul Rapoarte existent
-
-        self.title("Generator documente din șabloane Word")
-
-        self.geometry("1100x750")
-
-        self.minsize(900, 600)
-
-        # Scale all basic tk/ttk fonts
-        from tkinter import font as tkfont
-        default_font = tkfont.nametofont("TkDefaultFont")
-        default_font.configure(size=12, family="Segoe UI")
-        text_font = tkfont.nametofont("TkTextFont")
-        text_font.configure(size=11, family="Segoe UI")
-        fixed_font = tkfont.nametofont("TkFixedFont")
-        fixed_font.configure(size=11, family="Consolas")
-
-        # Apply global ttk style for consistency across all tabs
-        from tkinter import ttk as _ttk
-        _style = _ttk.Style()
-        try:
-            _style.theme_use('vista')
-        except Exception:
-            pass
-        _FONT_UI = ("Segoe UI", 12)
-        _FONT_BOLD = ("Segoe UI", 12, "bold")
-        _style.configure(".", font=_FONT_UI)
-        _style.configure("TLabel", font=_FONT_UI)
-        _style.configure("TButton", font=_FONT_BOLD, padding=6)
-        _style.configure("TEntry", font=_FONT_UI, padding=4)
-        _style.configure("TLabelframe.Label", font=_FONT_BOLD)
-        _style.configure("TNotebook.Tab", font=_FONT_BOLD, padding=[10, 5])
-        _style.configure("TCheckbutton", font=_FONT_UI)
-        _style.configure("TRadiobutton", font=_FONT_UI)
-        _style.configure("Treeview", font=_FONT_UI, rowheight=28)
-        _style.configure("Treeview.Heading", font=_FONT_BOLD)
-
-
-
-        # Ascundem fereastra până la acceptarea disclaimer-ului
-
-        self.withdraw()
-
-        # self.after(100, self.show_disclaimer)
-
-        self.after(100, lambda: self.start_app(None))
-
-
-
-        self.current_version = version.__version__
-
-        self.ui_batcher = UIUpdateBatcher(min_interval_ms=100)
-
-
-
-        # State counts (Feature 5)
-
-        self.success_count = 0
-
-        self.error_count = 0
-
-        self.total_count = 0
-
-        self.progress_val = 0
-
-
-
-        # === LOCAL AI GUIDE ===
-
-        self.local_guide = LocalAIGuide(self)
-
-
-
-        # === MULTIPROCESSING ENGINE ===
-
-        self.mp_engine = MultiprocessingEngine()
-
-        self.performance_tracker = PerformanceTracker()
-
-
-
-        # Configurări din fișier
-
-        self.filtered_data = None
-
-        self.full_df = None
-
-        self.global_excel_df = None
-
-        self.template_files = config.get('template_files', [])
-
-        self.excel_output_path = tk.StringVar(value=config.get('excel_output', 'placeholders.xlsx'))
-
-        self.data_file_path = tk.StringVar(value=config.get('data_file', ''))
-
-        self.output_dir_path = tk.StringVar(value=config.get('output_dir', 'output'))
-
-        self.folder_column = tk.StringVar(value=config.get('folder_column', ''))
-
-        self.filename_pattern = tk.StringVar(value=config.get('filename_pattern', '{ID}_{template_name}.docx'))
-
-        self.theme = tk.StringVar(value=config.get('theme', 'light'))
-
-        self.chunksize = tk.IntVar(value=config.get('chunksize', 1000))
-
-        self.touch_mode = tk.BooleanVar(value=config.get('touch_mode', False))
-
-
-
-        # Email config
-
-        self.email_config = {
-
-            'enabled': tk.BooleanVar(value=config.get('email_enabled', False)),
-
-            'smtp_server': tk.StringVar(value=config.get('smtp_server', '')),
-
-            'smtp_port': tk.IntVar(value=config.get('smtp_port', 587)),
-
-            'username': tk.StringVar(value=config.get('email_username', '')),
-
-            'password': tk.StringVar(value=config.get('email_password', '')),
-
-            'from': tk.StringVar(value=config.get('email_from', '')),
-
-            'to': tk.StringVar(value=config.get('email_to', '')),
-
-            'subject': tk.StringVar(value=config.get('email_subject', 'Documente generate')),
-
-            'body': tk.StringVar(value=config.get('email_body', 'Vă rugăm găsiși atașat documentele generate.'))
-
-        }
-
-        self.email_send_mode = tk.StringVar(value=config.get('email_send_mode', 'individual'))
-
-        self.email_column = tk.StringVar(value=config.get('email_column', ''))
-
-        self.email_subject_pattern = tk.StringVar(value=config.get('email_subject_pattern', 'Documente generate pentru {ID}'))
-
-
-
-        # Opțiuni avansate (noi)
-
-        self.multiprocessing_var = tk.BooleanVar(value=config.get('multiprocessing', False))
-
-        self.num_workers_var = tk.IntVar(value=config.get('num_workers', max(1, mp.cpu_count() - 1)))
-
-        self.auto_recovery_var = tk.BooleanVar(value=config.get('auto_recovery', False))
-
-        self.pdf_var = tk.BooleanVar(value=config.get('pdf_gen', False))
-
-        self.zip_var = tk.BooleanVar(value=config.get('zip_gen', False))
-
-        self.zip_per_row_var = tk.BooleanVar(value=config.get('zip_per_row', False))
-
-        self.merge_var = tk.BooleanVar(value=config.get('merge_gen', False))
-
-        self.audio_var = tk.BooleanVar(value=config.get('audio_alert', True))
-
-        self.subfolder_var = tk.StringVar(value=config.get('subfolder_col', '(Niciunul)'))
-
-        self.clean_data_var = tk.BooleanVar(value=config.get('clean_data', True))
-
-
-
-        # Profile
-
-        self.profile_var = tk.StringVar(value=config.get('profile_name', ''))
-
-        self.profiles_dir = Path("profiles")
-
-        self.profiles_dir.mkdir(exist_ok=True)
-
-
-
-        # Recent files
-
-        self.recent_files = config.get('recent_files', [])
-
-
-
-        # Istoric backup-uri
-
-        self.history = []
-
-
-
-        # Script-uri personalizate
-
-        self.scripts = []
-
-        global app_scripts
-
-        app_scripts = self.scripts
-
-
-
-        # Macro recorder
-
-        self.macro_recorder = MacroRecorder()
-
-
-
-        # Coadă pentru log
-
-        self.log_queue = queue.Queue()
-
-        self.stop_render_event = threading.Event()
-
-
-
-        # Variabile pentru progres
-
-        self.progress_start_time = None
-
-        self.progress_last_count = 0
-
-        self.progress_last_time = None
-
-
-
-        # Undo/Redo
-
-        self.undo_stack = deque(maxlen=50)
-
-        self.redo_stack = deque(maxlen=50)
-
-
-
-        # State pentru Excel Viewer
-
-        self.full_df = None
-
-        self.column_vars = {}
-
-        self.search_var = tk.StringVar()
-
-
-
-        # State pentru Forms
-
-        self.forms_vars = {}
-
-
-
-        # Construire UI
-
-        self.create_toolbar()
-
-        self.create_menu()
-
-        self.create_status_bar()
-
-
-
-        self.paned = ctk.CTkFrame(self)
-
-        self.paned.pack(fill='both', expand=True)
-
-
-
-        self.notebook_frame = ctk.CTkFrame(self.paned)
-
-        self.notebook_frame.pack(fill='both', expand=True, padx=5, pady=5)
-
-
-
-        self.notebook = SidebarNotebook(self.notebook_frame)
-
-        self.notebook.pack(fill='both', expand=True, padx=5, pady=5)
-
-
-
-        # Log frame (Creat înainte de init_tabs pentru a permite logarea în timpul init)
-
-        self.log_frame = ctk.CTkFrame(self.paned)
-
-        self.log_area = scrolledtext.ScrolledText(self.log_frame, height=8, state='normal', wrap='word',
-
-                                                 bg="#1e293b", fg="white", font=("Consolas", 10))
-
-        self.log_area.pack(fill='both', expand=True, padx=5, pady=5)
-
-
-
-        # Configurare tag-uri pentru log (hyperlink)
-
-        self.log_area.tag_configure("hyper", foreground="#60a5fa", underline=1)
-
-        self.log_area.tag_bind("hyper", "<Button-1>", self._on_log_click)
-
-        self.log_area.tag_bind("hyper", "<Enter>", lambda e: self.log_area.configure(cursor="hand2"))
-
-        self.log_area.tag_bind("hyper", "<Leave>", lambda e: self.log_area.configure(cursor=""))
-
-
-
-        # Inișializare tab-uri
-
-        self.init_tabs()
-
-
-
-        self.after(100, self.poll_log_queue)
-
-
-
-        self.apply_theme()
-
-        self.apply_touch_mode()
-
-        self.refresh_all_file_listboxes()
-
-        self.after(2000, self.check_for_updates)
-
-        self.bind_all_shortcuts()
-
-        self.start_auto_save()
-
-
-
-        # Pornire server web API dacă Flask disponibil
-
-        if HAS_FLASK:
-
-            from web_api import start_server
-
-            threading.Thread(target=start_server, args=(self,), daemon=True).start()
-
-            self.log("Web API pornit pe http://localhost:5000")
-
-
 
     def show_disclaimer(self):
 
@@ -7562,12 +7175,6 @@ class PlaceholderApp(ctk.CTk):
 
 
 
-    def open_web_wizard(self):
-
-        webbrowser.open("http://localhost:5000")
-
-
-
     def stop_operation(self):
 
         self.stop_render_event.set()
@@ -7737,3 +7344,40 @@ if __name__ == "__main__":
         pass
 
     app.mainloop()
+
+
+    def audit_empty_cells(self):
+        """Identifica cine are celule goale."""
+        data = self._get_stat_data()
+        if data is None: return
+        empty_rows = data[data.isna().any(axis=1) | (data == '').any(axis=1)]
+        if empty_rows.empty:
+            messagebox.showinfo("Audit", "Nu s-au gasit celule goale!")
+            return
+        name_col = self._find_col(data, ['Nume', 'nume_angajat', 'Nume de familie'])
+        if name_col:
+            names = empty_rows[name_col].head(20).tolist()
+            msg = "Persoane cu date lipsa:\n" + "\n".join([f"- {n}" for n in names])
+            if len(empty_rows) > 20:
+                msg += f"\n... si inca {len(empty_rows)-20} rânduri."
+            messagebox.showwarning("Audit Celule Goale", msg)
+        else:
+            messagebox.showwarning("Audit Celule Goale", f"Gasite {len(empty_rows)} rânduri cu date lipsa.")
+
+    def audit_help_requests(self):
+        """Identifica cine are nevoie de ajutor."""
+        data = self._get_stat_data()
+        if data is None: return
+        possible_cols = ['ajutor', 'nevoie ajutor', 'asistenta']
+        col = self._find_col(data, possible_cols)
+        if not col:
+            messagebox.showinfo("Audit", "Nu s-a gasit coloana de solicitare ajutor.")
+            return
+        help_requested = data[data[col].astype(str).lower().str.contains('da|yes|true', na=False)]
+        if help_requested.empty:
+            messagebox.showinfo("Audit", "Nimeni nu a solicitat ajutor.")
+            return
+        name_col = self._find_col(data, ['Nume', 'nume_angajat'])
+        names = help_requested[name_col if name_col else data.columns[0]].head(20).tolist()
+        msg = "Persoane care au solicitat ajutor:\n" + "\n".join([f"- {n}" for n in names])
+        messagebox.showinfo("Solicitari Ajutor", msg)

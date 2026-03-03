@@ -7,10 +7,8 @@ class AnalyticsService:
     @staticmethod
     def get_research_grades(df: pd.DataFrame) -> Dict[str, int]:
         """Distribution of CSI, CSII, etc."""
-        # Find column containing CSI/CSII
         col = AnalyticsService._find_col(df, ['grad', 'functie', 'position'])
-        if not col:
-            return {}
+        if not col: return {}
         mask = df[col].astype(str).str.contains('CS', case=False, na=False)
         return df[mask][col].value_counts().to_dict()
 
@@ -19,19 +17,18 @@ class AnalyticsService:
         """Student, Masterand, Doctorand counts"""
         col = AnalyticsService._find_col(df, ['statut', 'tip', 'categorie', 'studii'])
         if not col:
-            # Broad search
             for c in df.columns:
                 if df[c].astype(str).str.contains('Student|Masterand|Doctorand', case=False, na=False).any():
                     col = c
                     break
         if not col: return {}
-        return df[col].value_counts().to_dict()
+        mask = df[col].astype(str).str.contains('Student|Masterand|Doctorand', case=False, na=False)
+        return df[mask][col].value_counts().to_dict()
 
     @staticmethod
     def get_integrity_audit(df: pd.DataFrame) -> Dict[str, Any]:
         """Identify missing values and help requests"""
         empty_rows = df[df.isna().any(axis=1) | (df == '').any(axis=1)]
-
         help_col = AnalyticsService._find_col(df, ['ajutor', 'asistenta', 'help'])
         help_requests = []
         if help_col:

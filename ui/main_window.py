@@ -4,6 +4,9 @@ from ui.components.dashboard import DashboardTab
 from ui.components.render_tab import RenderTab
 from ui.components.reports_tab import ReportsTab
 from ui.components.audit_tab import AuditTab
+from ui.components.extract_tab import ExtractTab
+from ui.components.settings_tab import SettingsTab
+from ui.components.excel_viewer import ExcelViewerTab
 from core.engine import DocumentEngine
 from core.config_manager import ConfigManager
 
@@ -31,11 +34,13 @@ class EnterpriseApp(ctk.CTk):
         self.main_container.grid_columnconfigure(0, weight=1)
 
         self.tab_classes = {
-                        "Dashboard": DashboardTab,
+            "Dashboard": DashboardTab,
+            "Pasul 1: Extrage placeholders": ExtractTab,
             "Pasul 2: GenereazÄ documente": RenderTab,
             "Rapoarte": ReportsTab,
-            "Audit Log": AuditTab
-            # Placeholder for others...
+            "Audit Log": AuditTab,
+            "SetÄri": SettingsTab,
+            "4. Vizualizare Excel": ExcelViewerTab
         }
         self.tabs = {}
         self.current_tab = None

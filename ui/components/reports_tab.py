@@ -9,17 +9,15 @@ class ReportsTab(EnterpriseTab):
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
 
-        # Sidebar for report controls
         sidebar = ctk.CTkFrame(self, width=200)
         sidebar.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
 
         ctk.CTkLabel(sidebar, text="Analytic Controls", font=("Inter", 16, "bold")).pack(pady=20)
 
-        ctk.CTkButton(sidebar, text="Grade Cercetare", command=self.show_research).pack(fill="x", padx=10, pady=5)
+        ctk.CTkButton(sidebar, text="Grade Cercetare (CS..)", command=self.show_research).pack(fill="x", padx=10, pady=5)
         ctk.CTkButton(sidebar, text="Statut Studenți", command=self.show_students).pack(fill="x", padx=10, pady=5)
         ctk.CTkButton(sidebar, text="Integritate Date", command=self.show_integrity, fg_color="#ef4444").pack(fill="x", padx=10, pady=5)
 
-        # Main chart area
         self.chart_container = ctk.CTkFrame(self)
         self.chart_container.grid(row=0, column=1, sticky="nsew")
         self.chart_container.grid_rowconfigure(0, weight=1)
@@ -54,10 +52,8 @@ class ReportsTab(EnterpriseTab):
     def show_integrity(self):
         audit = self.engine.get_stats().get('integrity', {})
         fig, ax = plt.subplots(figsize=(8, 6))
-        labels = ['Empty Rows', 'Help Requested', 'Correct Rows']
-        # dummy total for calc
-        total = self.engine.get_stats().get('summary', {}).get('rows', 100)
-        vals = [audit.get('empty_row_count', 0), audit.get('help_request_count', 0), total]
-        ax.bar(labels, vals, color=['#ef4444', '#f59e0b', '#10b981'])
+        labels = ['Empty Rows', 'Help Requested']
+        vals = [audit.get('empty_row_count', 0), audit.get('help_request_count', 0)]
+        ax.bar(labels, vals, color=['#ef4444', '#f59e0b'])
         ax.set_title("Data Integrity Audit")
         self._display_plot(fig)
