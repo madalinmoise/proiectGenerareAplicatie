@@ -47,8 +47,26 @@ class EnterpriseApp(ctk.CTk):
         self.tabs = {}
         self.current_tab = None
 
+        self.progress_val = 0
+        self.success_count = 0
+        self.error_count = 0
+        self.engine.register_observer(self)
+
         # Initial Tab
         self.set_tab("Dashboard")
+
+    def on_engine_event(self, event_type, data):
+        if event_type == 'job_progress':
+            if data['total'] > 0:
+                self.progress_val = (data['current'] / data['total']) * 100
+        elif event_type == 'success_count_inc':
+            self.success_count += 1
+        elif event_type == 'error_count_inc':
+            self.error_count += 1
+        elif event_type == 'job_started':
+            self.success_count = 0
+            self.error_count = 0
+            self.progress_val = 0
 
     def set_tab(self, name):
         if name not in self.tab_classes:
