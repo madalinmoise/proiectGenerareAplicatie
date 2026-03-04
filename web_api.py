@@ -23,11 +23,11 @@ def index():
 def api_preview_excel():
     if not main_app:
         return jsonify({'error': 'App not initialized'}), 500
-    
+
     file_path = main_app.data_file_path.get()
     if not file_path or not os.path.exists(file_path):
         return jsonify({'error': 'Niciun fișier Excel selectat în Desktop.'})
-    
+
     try:
         df = pd.read_excel(file_path, sheet_name=0, nrows=50)
         return jsonify({
@@ -46,19 +46,19 @@ def api_upload_excel():
     file = request.files['file']
     if file.filename == '':
         return jsonify({'error': 'No selected file'})
-    
+
     # Save to a temp location so pandas can read it
     temp_dir = Path("temp_uploads")
     temp_dir.mkdir(exist_ok=True)
     temp_path = temp_dir / file.filename
     file.save(temp_path)
-    
+
     # Update main_app
     main_app.data_file_path.set(str(temp_path.absolute()))
     main_app.load_excel_columns()
     main_app.incarca_previzualizare_excel_async()
     main_app.load_global_excel_df(str(temp_path.absolute()))
-    
+
     return jsonify({'status': 'success', 'file': file.filename})
 
 @app.route('/api/wizard/templates')
@@ -75,21 +75,21 @@ def api_upload_template():
     if not main_app: return jsonify({'error': 'App not init'}), 500
     if 'files[]' not in request.files:
         return jsonify({'error': 'No files'})
-    
+
     files = request.files.getlist('files[]')
     temp_dir = Path("temp_uploads")
     temp_dir.mkdir(exist_ok=True)
-    
+
     paths = []
     for file in files:
         if file.filename:
             temp_path = temp_dir / file.filename
             file.save(temp_path)
             paths.append(str(temp_path.absolute()))
-            
+
     if paths:
         main_app.add_template_files(paths)
-        
+
     return jsonify({'status': 'success', 'count': len(paths)})
 
 @app.route('/api/wizard/options', methods=['GET'])
@@ -143,14 +143,14 @@ def api_start():
     if not main_app:
         return jsonify({'error': 'App not initialized'}), 500
     print("DEBUG: api_start called in web_api", flush=True)
-    main_app.after(0, main_app.start_render)
+    main_app.after(0, lambda: main_app.start_render())
     return jsonify({'status': 'started'})
 
 @app.route('/api/wizard/stop', methods=['POST'])
 def api_stop():
     if not main_app:
         return jsonify({'error': 'App not initialized'}), 500
-    main_app.after(0, main_app.stop_operation)
+    main_app.after(0, lambda: main_app.stop_operation())
     return jsonify({'status': 'stopped'})
 
 @app.route('/api/wizard/recent-excel')

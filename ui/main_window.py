@@ -36,10 +36,10 @@ class EnterpriseApp(ctk.CTk):
         self.tab_classes = {
             "Dashboard": DashboardTab,
             "Pasul 1: Extrage placeholders": ExtractTab,
-            "Pasul 2: GenereazÄ documente": RenderTab,
+            "Pasul 2: Generează documente": RenderTab,
             "Rapoarte": ReportsTab,
             "Audit Log": AuditTab,
-            "SetÄri": SettingsTab,
+            "Setări": SettingsTab,
             "4. Vizualizare Excel": ExcelViewerTab
         }
         self.tabs = {}
@@ -61,6 +61,34 @@ class EnterpriseApp(ctk.CTk):
 
         self.tabs[name].grid(row=0, column=0, sticky="nsew")
         self.current_tab = self.tabs[name]
+
+    def start_render(self):
+        """Backward compatibility for Web API"""
+        if hasattr(self, 'engine'):
+            # Fetch options from config or UI state
+            options = {
+                'parallel': self.config_mgr.get('multiprocessing', True),
+                'pdf_gen': self.config_mgr.get('pdf_gen', False)
+            }
+            return self.engine.start_job(options)
+
+    def stop_operation(self):
+        """Backward compatibility for Web API"""
+        if hasattr(self, 'engine'):
+            self.engine.stop_job()
+
+    @property
+    def template_files(self):
+        return self.engine.config.get('template_files', [])
+
+    @property
+    def data_file_path(self):
+        # Return a mock object that has a .get() method to match current app structure if needed
+        class MockVar:
+            def __init__(self, val): self.val = val
+            def get(self): return self.val
+            def set(self, v): pass
+        return MockVar(self.engine.config.get('data_file', ''))
 
 if __name__ == "__main__":
     app = EnterpriseApp()

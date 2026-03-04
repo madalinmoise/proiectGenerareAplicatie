@@ -135,3 +135,14 @@ class DocumentEngine:
             self.active_process.terminate()
             self.is_running = False
             self.notify_observers('job_stopped', {})
+
+    def extract_placeholders(self, callback: Optional[Callable] = None):
+        """Extract placeholders from loaded template files"""
+        files = self.config.get('template_files', [])
+        if not files:
+            return [], {}
+        return extract_all_placeholders_from_files(files, progress_callback=callback)
+
+    def start_rendering(self, progress_cb, log_queue, options):
+        """Compatibility method for start_render"""
+        return self.start_job(options)
