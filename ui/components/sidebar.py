@@ -18,9 +18,11 @@ class EnterpriseSidebar(ctk.CTkFrame):
         self.create_nav_button("Dashboard", "Dashboard", 1)
         self.create_nav_button("Extracție", "Pasul 1: Extrage placeholders", 2)
         self.create_nav_button("Randare", "Pasul 2: Generează documente", 3)
-        self.create_nav_button("Analiză & Rapoarte", "Rapoarte", 4)
-        self.create_nav_button("Audit Log", "Audit Log", 5)
-        self.create_nav_button("Setări", "Setări", 6)
+        self.create_nav_button("Vizualizare Excel", "Vizualizare Excel", 4)
+        self.create_nav_button("Vizualizare Word", "Vizualizare Word", 5)
+        self.create_nav_button("Analiză & Rapoarte", "Rapoarte", 6)
+        self.create_nav_button("Audit Log", "Audit Log", 7)
+        self.create_nav_button("Setări", "Setări", 8)
 
         # Select default
         self.select_button("Dashboard")
@@ -35,6 +37,7 @@ class EnterpriseSidebar(ctk.CTkFrame):
         self.buttons[label] = btn
 
     def select_button(self, label, tab_name=None):
+        if label not in self.buttons: return
         for btn in self.buttons.values():
             btn.configure(fg_color="transparent", text_color=("gray10", "gray90"))
 

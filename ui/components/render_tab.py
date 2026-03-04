@@ -32,6 +32,10 @@ class RenderTab(EnterpriseTab):
                                       command=self.engine.stop_job, state="disabled")
         self.stop_btn.pack(pady=10, padx=50, fill="x")
 
+        # Log output
+        self.log_box = ctk.CTkTextbox(self, height=150)
+        self.log_box.pack(fill="x", padx=20, pady=10)
+
     def browse_data(self):
         f = filedialog.askopenfilename(filetypes=[("Excel", "*.xlsx")])
         if f:
@@ -46,9 +50,13 @@ class RenderTab(EnterpriseTab):
         if self.engine.start_job(options):
             self.start_btn.configure(state="disabled")
             self.stop_btn.configure(state="normal")
+            self.log_box.insert("end", "Starting generation job...\n")
 
     def on_engine_event(self, event_type, data):
         if event_type == 'job_finished':
             self.start_btn.configure(state="normal")
             self.stop_btn.configure(state="disabled")
             messagebox.showinfo("Production Hub", "Batch process completed.")
+        elif event_type == 'engine_log':
+            self.log_box.insert("end", f"{data}\n")
+            self.log_box.see("end")

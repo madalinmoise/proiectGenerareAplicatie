@@ -18,23 +18,24 @@ from services.analytics_service import AnalyticsService
 logger = logging.getLogger('HRAudit.Engine')
 
 class DocumentEngine:
-    """Enterprise Headless engine with Job Queueing and MVC architecture"""
+    """Enterprise Document Engine - Central logic hub"""
 
     def __init__(self):
-        self.config = {}
-        self.jobs = [] # List of job info
+        self.config = {
+            'template_files': [],
+            'data_file': '',
+            'output_dir': 'output',
+            'folder_column': 'ID',
+            'filename_pattern': '{ID}_{template_name}.docx'
+        }
         self.active_process = None
-        self.status_queue = Queue() # For communication from process to engine
-
-        # State
+        self.status_queue = Queue()
         self.is_running = False
-        self.current_job_id = None
-
-        # Observers (UI components)
         self._observers = []
 
     def register_observer(self, observer):
-        self._observers.append(observer)
+        if observer not in self._observers:
+            self._observers.append(observer)
 
     def notify_observers(self, event_type, data):
         for obs in self._observers:
@@ -68,26 +69,23 @@ class DocumentEngine:
             }
         }
 
+    def start_rendering(self, options: Dict[str, Any]):
+        """Compatibility wrapper for start_job"""
+        return self.start_job(options)
+
     def start_job(self, options: Dict[str, Any]):
-        """Queue and start a rendering job in a separate process"""
         if self.is_running:
             return False
 
-        job_id = f"JOB_{len(self.jobs) + 1}"
-        self.current_job_id = job_id
         self.is_running = True
-
-        # Start background process (Option B)
         self.active_process = Process(
             target=self._run_process,
             args=(self.config, options, self.status_queue)
         )
         self.active_process.start()
 
-        # Start a local thread to monitor the status queue and notify observers
         threading.Thread(target=self._monitor_queue, daemon=True).start()
-
-        self.notify_observers('job_started', {'job_id': job_id})
+        self.notify_observers('job_started', {})
         return True
 
     def _monitor_queue(self):
@@ -101,20 +99,25 @@ class DocumentEngine:
                     self.notify_observers('job_progress', msg[1])
                 elif msg[0] == 'LOG':
                     self.notify_observers('engine_log', msg[1])
+                elif msg[0] == 'SUCCESS':
+                    self.notify_observers('success_count_inc', msg[1])
+                elif msg[0] == 'ERROR':
+                    self.notify_observers('error_count_inc', msg[1])
             except queue.Empty:
                 continue
 
     @staticmethod
     def _run_process(config, options, status_q):
-        """Entry point for the separate OS process"""
         try:
             def progress_cb(current, total):
                 status_q.put(('PROGRESS', {'current': current, 'total': total}))
 
-            # Custom log queue to pipe back to status_q
             class ProxyLogger:
                 def put(self, msg):
-                    status_q.put(('LOG', msg))
+                    if isinstance(msg, tuple):
+                        status_q.put(msg)
+                    else:
+                        status_q.put(('LOG', msg))
 
             render_documents(
                 template_files=config.get('template_files', []),
@@ -137,12 +140,8 @@ class DocumentEngine:
             self.notify_observers('job_stopped', {})
 
     def extract_placeholders(self, callback: Optional[Callable] = None):
-        """Extract placeholders from loaded template files"""
         files = self.config.get('template_files', [])
-        if not files:
+        valid_files = [f for f in files if os.path.exists(f)]
+        if not valid_files:
             return [], {}
-        return extract_all_placeholders_from_files(files, progress_callback=callback)
-
-    def start_rendering(self, progress_cb, log_queue, options):
-        """Compatibility method for start_render"""
-        return self.start_job(options)
+        return extract_all_placeholders_from_files(valid_files, progress_callback=callback)

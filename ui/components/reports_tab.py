@@ -14,7 +14,7 @@ class ReportsTab(EnterpriseTab):
 
         ctk.CTkLabel(sidebar, text="Analytic Controls", font=("Inter", 16, "bold")).pack(pady=20)
 
-        ctk.CTkButton(sidebar, text="Grade Cercetare (CS..)", command=self.show_research).pack(fill="x", padx=10, pady=5)
+        ctk.CTkButton(sidebar, text="Grade Cercetare", command=self.show_research).pack(fill="x", padx=10, pady=5)
         ctk.CTkButton(sidebar, text="Statut Studenți", command=self.show_students).pack(fill="x", padx=10, pady=5)
         ctk.CTkButton(sidebar, text="Integritate Date", command=self.show_integrity, fg_color="#ef4444").pack(fill="x", padx=10, pady=5)
 

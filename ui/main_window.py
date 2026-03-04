@@ -7,6 +7,7 @@ from ui.components.audit_tab import AuditTab
 from ui.components.extract_tab import ExtractTab
 from ui.components.settings_tab import SettingsTab
 from ui.components.excel_viewer import ExcelViewerTab
+from ui.components.word_viewer import WordViewerTab
 from core.engine import DocumentEngine
 from core.config_manager import ConfigManager
 
@@ -37,10 +38,11 @@ class EnterpriseApp(ctk.CTk):
             "Dashboard": DashboardTab,
             "Pasul 1: Extrage placeholders": ExtractTab,
             "Pasul 2: Generează documente": RenderTab,
+            "Vizualizare Excel": ExcelViewerTab,
+            "Vizualizare Word": WordViewerTab,
             "Rapoarte": ReportsTab,
             "Audit Log": AuditTab,
-            "Setări": SettingsTab,
-            "4. Vizualizare Excel": ExcelViewerTab
+            "Setări": SettingsTab
         }
         self.tabs = {}
         self.current_tab = None
@@ -50,7 +52,6 @@ class EnterpriseApp(ctk.CTk):
 
     def set_tab(self, name):
         if name not in self.tab_classes:
-            print(f"Tab {name} not implemented in modern UI yet.")
             return
 
         if self.current_tab:
@@ -63,19 +64,14 @@ class EnterpriseApp(ctk.CTk):
         self.current_tab = self.tabs[name]
 
     def start_render(self):
-        """Backward compatibility for Web API"""
-        if hasattr(self, 'engine'):
-            # Fetch options from config or UI state
-            options = {
-                'parallel': self.config_mgr.get('multiprocessing', True),
-                'pdf_gen': self.config_mgr.get('pdf_gen', False)
-            }
-            return self.engine.start_job(options)
+        options = {
+            'parallel': self.config_mgr.get('multiprocessing', True),
+            'pdf_gen': self.config_mgr.get('pdf_gen', False)
+        }
+        return self.engine.start_job(options)
 
     def stop_operation(self):
-        """Backward compatibility for Web API"""
-        if hasattr(self, 'engine'):
-            self.engine.stop_job()
+        self.engine.stop_job()
 
     @property
     def template_files(self):
@@ -83,12 +79,67 @@ class EnterpriseApp(ctk.CTk):
 
     @property
     def data_file_path(self):
-        # Return a mock object that has a .get() method to match current app structure if needed
-        class MockVar:
-            def __init__(self, val): self.val = val
-            def get(self): return self.val
-            def set(self, v): pass
-        return MockVar(self.engine.config.get('data_file', ''))
+        class ConfigVar:
+            def __init__(self, mgr, key):
+                self.mgr = mgr
+                self.key = key
+            def get(self): return self.mgr.get(self.key, '')
+            def set(self, v): self.mgr.set(self.key, v)
+        return ConfigVar(self.config_mgr, 'data_file')
+
+    @property
+    def folder_column(self):
+        return self._get_config_var('folder_column')
+
+    @property
+    def output_dir_path(self):
+        return self._get_config_var('output_dir')
+
+    @property
+    def filename_pattern(self):
+        return self._get_config_var('filename_pattern')
+
+    @property
+    def multiprocessing_var(self):
+        return self._get_config_var('multiprocessing')
+
+    @property
+    def pdf_var(self):
+        return self._get_config_var('pdf_gen')
+
+    @property
+    def zip_per_row_var(self):
+        return self._get_config_var('zip_per_row')
+
+    def _get_config_var(self, key):
+        class ConfigVar:
+            def __init__(self, mgr, k):
+                self.mgr = mgr
+                self.k = k
+            def get(self): return self.mgr.get(self.k)
+            def set(self, v): self.mgr.set(self.k, v)
+        return ConfigVar(self.config_mgr, key)
+
+    def load_excel_columns(self):
+        # Triggered by web_api, usually used to refresh UI components
+        self.engine.notify_observers('config_updated', self.engine.config)
+
+    def incarca_previzualizare_excel_async(self):
+        # Logic is handled by observers (ExcelViewerTab)
+        self.engine.notify_observers('data_loaded', self.engine.load_data())
+
+    @property
+    def global_excel_df(self):
+        return self.engine.load_data()
+
+    def load_global_excel_df(self, p):
+        self.engine.set_config({'data_file': p})
+
+    def add_template_files(self, p):
+        current = self.engine.config.get('template_files', [])
+        new_list = list(set(current + p))
+        self.config_mgr.set('template_files', new_list)
+        self.engine.set_config({'template_files': new_list})
 
 if __name__ == "__main__":
     app = EnterpriseApp()

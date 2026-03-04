@@ -42,16 +42,21 @@ def show_startup_hub():
         print("Starting Web Server on http://localhost:5000...")
         import web_api
         from core.engine import DocumentEngine
-        engine = DocumentEngine()
-        # Mock instance for web_api if needed, or better start the full desktop app hidden
+        # We need a main_app instance for web_api
         from ui.main_window import EnterpriseApp
-        app = EnterpriseApp()
-        app.withdraw() # Hide it
-        import threading
-        threading.Thread(target=web_api.start_server, args=(app,), daemon=True).start()
-        import webbrowser
-        webbrowser.open("http://localhost:5000")
-        app.mainloop()
+        # Using a minimal version for web or just withdraw the full one
+        # Note: on some systems withdraw() might still trigger DPI scaling logic
+        # if the engine hasn't fully detached.
+        try:
+            app = EnterpriseApp()
+            app.withdraw()
+            import threading
+            threading.Thread(target=web_api.start_server, args=(app,), daemon=True).start()
+            import webbrowser
+            webbrowser.open("http://localhost:5000")
+            app.mainloop()
+        except Exception as e:
+            print(f"Critical Error starting server: {e}")
 
     ctk.CTkButton(root, text="Desktop Application", height=50, width=300,
                   font=("Inter", 15, "bold"), command=launch_desktop).pack(pady=10)
